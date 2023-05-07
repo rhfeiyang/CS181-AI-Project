@@ -30,19 +30,16 @@ class Consumer:
         """
         go around restaurants and choose the one with the lowest price
         n: the number of sellers
-        return: the id of seller chosen, the price seller given
+        return: the id of seller chosen
         """
 
-        # TODO: from sellers, choose the one with the lowest price
-
         return random.randint(0, n-1)
-        # raise NotImplementedError
 
     def eat(self, index: int, choice: SellerChoices):
         """
         eat the food
-        price: the price of the food
-        return: the index of the seller chosen to eat in
+        choice: the choice of the price of the food that seller offers
+        return: the index of the seller chosen to eat
         """
         eatIdx = None
         if choice == SellerChoices.HIGH:

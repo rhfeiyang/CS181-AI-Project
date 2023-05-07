@@ -1,25 +1,3 @@
-# game.py
-# -------
-# Licensing Information:  You are free to use or extend these projects for
-# educational purposes provided that (1) you do not distribute or publish
-# solutions, (2) you retain this notice, and (3) you provide clear
-# attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-#
-# Attribution Information: The Pacman AI projects were developed at UC Berkeley.
-# The core projects and autograders were primarily created by John DeNero
-# (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# Student side autograding was added by Brad Miller, Nick Hay, and
-# Pieter Abbeel (pabbeel@cs.berkeley.edu).
-
-
-# game.py
-# -------
-# Licensing Information: Please do not distribute or publish solutions to this
-# project. You are free to use and extend these projects for educational
-# purposes. The Pacman AI projects were developed at UC Berkeley, primarily by
-# John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
-# For more info, see http://inst.eecs.berkeley.edu/~cs188/sp09/pacman.html
-
 from utils import *
 import time
 import os
@@ -73,6 +51,10 @@ class GameState:
         pass
 
     def copy(self):
+        '''
+        Copy the current GameState
+        return: the copy of the current GameState
+        '''
         newGameState = GameState(self.consumerNum, self.sellerNum, 0.0, self.dailyCost, self.dailyIncome)
         newGameState.consumerNum = self.consumerNum
         newGameState.sellerNum = self.sellerNum
@@ -82,7 +64,13 @@ class GameState:
         newGameState.dailyCost = self.dailyCost
         newGameState.dailyIncome = self.dailyIncome
 
-    def getNextState(self, agentIndex, choice):
+    def getNextState(self, agentIndex: int, choice: SellerChoices):
+        '''
+        Returns the next GameState if the agent choose choice.
+        agentIndex: the index of the agent who is going to choose
+        choice: the choice of the agent
+        return: the next GameState
+        '''
         newGameState = self.copy()
         consumer = newGameState.getCurrentConsumer()
         eatIdx = consumer.eat(agentIndex, choice)
@@ -90,6 +78,12 @@ class GameState:
         return newGameState
 
     def update(self, eatIndex: int, choice: SellerChoices):
+        '''
+        Update the state of the game.
+        eatIndex: the index of the seller who is going to be eaten
+        choice: the choice of the seller
+        return: None
+        '''
         for seller in self.sellers:
             seller.loseMoney(self.dailyCost)
             seller.getMoney(self.dailyIncome)
