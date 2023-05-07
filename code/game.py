@@ -114,10 +114,12 @@ class Game:
             # Fetch the next game state
             consumer = self.gameState.getCurrentConsumer()
             sellerIdx = consumer.chooseSeller(self.gameState.sellers)
-            seller = self.gameState.getSellersFromIndex(sellerIdx)
             sellerAgent = self.agents[sellerIdx]
             sellerChoice = sellerAgent.getChoice(self.gameState)
             eatIdx = consumer.eat(sellerIdx, sellerChoice)
+            if eatIdx != sellerIdx:
+                sellerAgent = self.agents[eatIdx]
+                sellerChoice = sellerAgent.getChoice(self.gameState)
             self.gameState.update(eatIdx, sellerChoice)
 
             self.gameOver = self.gameState.isWin() or self.gameState.isLose()
