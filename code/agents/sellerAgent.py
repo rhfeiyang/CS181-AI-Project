@@ -7,7 +7,7 @@ class SellerAgent(Agent):
     def __init__(self, index):
         self.index = index
 
-    def getAction(self, state):
+    def getChoice(self, state):
         dist = self.getDistribution(state)
         if len(dist) == 0:
             return SellerChoices.NONE
@@ -24,7 +24,7 @@ class RandomSeller(SellerAgent):
 
     def getDistribution(self, state):
         dist = utils.Counter()
-        for a in state.getLegalActions(self.index):
+        for a in state.getLegalChoices(self.index):
             dist[a] = 1.0
         dist.normalize()
         return dist
@@ -38,7 +38,7 @@ class GreedySellerHigh(SellerAgent):
 
     def getDistribution(self, state):
         dist = utils.Counter()
-        for a in state.getLegalActions(self.index):
+        for a in state.getLegalChoices(self.index):
             if a == SellerChoices.HIGH:
                 dist[a] = 1.0
             else:
@@ -59,7 +59,7 @@ class GreedySellerLow(SellerAgent):
 
     def getDistribution(self, state):
         dist = utils.Counter()
-        for a in state.getLegalActions(self.index):
+        for a in state.getLegalChoices(self.index):
             if state.getCurrentConsumer().isPrefer(self.index):
                 if a == SellerChoices.HIGH:
                     dist[a] = 1.0
@@ -86,7 +86,7 @@ class GreedySellerSuperLow(SellerAgent):
 
     def getDistribution(self, state):
         dist = utils.Counter()
-        for a in state.getLegalActions(self.index):
+        for a in state.getLegalChoices(self.index):
             if state.getCurrentConsumer().isPrefer(self.index):
                 if a == SellerChoices.HIGH:
                     dist[a] = 1.0

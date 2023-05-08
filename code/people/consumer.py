@@ -1,5 +1,7 @@
 import random
 from .seller import Seller, SellerChoices
+from utils import flipCoin
+
 
 class Consumer:
     def __init__(self, index: int, name: str, preference: int):
@@ -41,7 +43,7 @@ class Consumer:
         choice: the choice of the price of the food that seller offers
         return: the index of the seller chosen to eat
         """
-        if choice == SellerChoices.SUPERLOW:
+        if choice == SellerChoices.NONE:
             print(f"{self.name} is eating in restaurant {index} with superlow price")
             return None
 
@@ -74,6 +76,5 @@ class Consumer:
         #     elif choice == SellerChoices.LOW or choice == SellerChoices.SUPERLOW:
         #         self.preference = index
 
-        print(f"{self.name} is eating in restaurant {eatIdx} with superlow price")
+        # print(f"{self.name} is eating in restaurant {eatIdx} with superlow price")
         return eatIdx
-

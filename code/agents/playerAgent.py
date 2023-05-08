@@ -1,7 +1,7 @@
 from game import SellerChoices
 import random
 import utils
-from .sellerAgent import SellerAgent
+from .sellerAgent import *
 
 from .baseAgent import Agent
 from .learningAgent import ReinforcementAgent
@@ -17,64 +17,13 @@ def scoreEvaluationFunction(currentGameState):
     """
     return currentGameState.getScore()
 
-# def contestEvaluationFunction(currentGameState):
-#     from math import sqrt
-
-#     if currentGameState.isLose():
-#         return -999999
-#     if currentGameState.isWin():
-#         return 999999
-
-#     pacmanPos = currentGameState.getPacmanPosition()
-#     foodList = currentGameState.getFood().asList()
-#     GhostStates = currentGameState.getGhostStates()
-#     ScaredTimes = [ghostState.scaredTimer for ghostState in GhostStates]
-
-#     if currentGameState.hasWall(*pacmanPos):
-#         return -999999
-
-#     # minGhostsDist = min([manhattanDistance(pacmanPos, ghostDist)
-#     #                      for ghostDist in currentGameState.getGhostPositions()])
-#     # if minGhostsDist < 2:
-#     #     return -999999
-
-#     scaredList = []
-#     notScaredList = []
-#     for ghost in currentGameState.getGhostStates():
-#         if ghost.scaredTimer:
-#             scaredList.append(ghost)
-#         else:
-#             notScaredList.append(ghost)
-#     minNotScaredDist = min([manhattanDistance(pacmanPos, ghost.getPosition())
-#                             for ghost in notScaredList]) if notScaredList else 999999
-#     avgNotScaredDist = sum([manhattanDistance(pacmanPos, ghost.getPosition())
-#                             for ghost in notScaredList]) / len(notScaredList) if notScaredList else 999999
-#     minScaredDist = min([manhattanDistance(pacmanPos, ghost.getPosition())
-#                         for ghost in scaredList]) if scaredList else 0
-
-#     foodDist = [manhattanDistance(pacmanPos, food) for food in foodList]
-#     if not foodDist:
-#         return 999999
-#     minFoodDist = min(foodDist)
-#     maxFoodDist = max(foodDist)
-
-#     capsulesNum = len(currentGameState.getCapsules())
-#     foodNum = len(foodList)
-#     score = currentGameState.getScore()
-
-#     # if minNotScaredDist == 0:
-#     #     return -999999
-
-#     # return -200 * capsulesNum - 40 * foodNum + 5 * score - 2 * minFoodDist + 3*sqrt(maxFoodDist) - 2 * minScaredDist - 20.0 / minNotScaredDist - 2.0 / avgNotScaredDist
-#     return -200 * capsulesNum - 50 * foodNum + 5 * score - 1.8 * minFoodDist + 3*sqrt(maxFoodDist) - 2 * minScaredDist - 2.0 / max(10, minNotScaredDist)
-
 
 class ExpectimaxAgent(Agent):
     """
         Your agent for the mini-contest
     """
 
-    def __init__(self, evalFn='contestEvaluationFunction', depth='3'):
+    def __init__(self, evalFn='scoreEvaluationFunction', depth='3'):
         self.index = 0  # Pacman is always agent index 0
         self.evaluationFunction = utils.lookup(evalFn, globals())
         self.depth = int(depth)
@@ -89,7 +38,7 @@ class ExpectimaxAgent(Agent):
 
         def exp_value(gameState, depth, agentIndex):
             v = 0
-            sellerB = SellerAgent.RandomSeller(agentIndex)
+            sellerB = RandomSeller(agentIndex)
             choiceDistribution = sellerB.getDistribution(gameState)
 
             for choice, weight in choiceDistribution.items():
