@@ -3,7 +3,7 @@ import random
 import utils
 import sellerAgent
 
-from game import Agent
+from baseAgent import Agent
 from learningAgent import ReinforcementAgent
 
 

@@ -1,9 +1,7 @@
 from game import *
 from agent import *
-from sellerAgent import *
-import utils
+from code.agents.sellerAgent import *
 import random
-import os
 import sys
 
 

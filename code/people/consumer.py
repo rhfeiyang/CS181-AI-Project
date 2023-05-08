@@ -1,7 +1,5 @@
 import random
 from seller import Seller, SellerChoices
-from utils import flipCoin
-
 
 class Consumer:
     def __init__(self, index: int, name: str, preference: int):

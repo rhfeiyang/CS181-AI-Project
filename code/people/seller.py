@@ -1,5 +1,3 @@
-import utils
-
 
 class SellerChoices:
     HIGH = 'high'

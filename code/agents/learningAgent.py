@@ -1,4 +1,4 @@
-from game import Agent
+from baseAgent import Agent
 import random
 import utils
 import time

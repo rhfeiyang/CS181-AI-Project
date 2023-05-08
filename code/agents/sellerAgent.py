@@ -1,6 +1,5 @@
-from game import Agent
-from seller import SellerChoices
-import random
+from baseAgent import Agent
+from people.seller import SellerChoices
 import utils
 
 
