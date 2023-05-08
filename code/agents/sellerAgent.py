@@ -1,4 +1,4 @@
-from baseAgent import Agent
+from .baseAgent import Agent
 from people.seller import SellerChoices
 import utils
 

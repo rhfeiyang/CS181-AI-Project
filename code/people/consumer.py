@@ -1,5 +1,5 @@
 import random
-from seller import Seller, SellerChoices
+from .seller import Seller, SellerChoices
 
 class Consumer:
     def __init__(self, index: int, name: str, preference: int):
@@ -76,3 +76,4 @@ class Consumer:
 
         print(f"{self.name} is eating in restaurant {eatIdx} with superlow price")
         return eatIdx
+

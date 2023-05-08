@@ -1,10 +1,10 @@
 from game import SellerChoices
 import random
 import utils
-import sellerAgent
+from .sellerAgent import SellerAgent
 
-from baseAgent import Agent
-from learningAgent import ReinforcementAgent
+from .baseAgent import Agent
+from .learningAgent import ReinforcementAgent
 
 
 def scoreEvaluationFunction(currentGameState):
@@ -89,7 +89,7 @@ class ExpectimaxAgent(Agent):
 
         def exp_value(gameState, depth, agentIndex):
             v = 0
-            sellerB = sellerAgent.RandomSeller(agentIndex)
+            sellerB = SellerAgent.RandomSeller(agentIndex)
             choiceDistribution = sellerB.getDistribution(gameState)
 
             for choice, weight in choiceDistribution.items():

@@ -1,4 +1,4 @@
-from baseAgent import Agent
+from .baseAgent import Agent
 import random
 import utils
 import time
