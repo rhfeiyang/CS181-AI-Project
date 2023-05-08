@@ -1,6 +1,5 @@
 from game import *
-from agent import *
-from code.agents.sellerAgent import *
+from agents import *
 import random
 import sys
 
