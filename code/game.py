@@ -20,11 +20,16 @@ class GameState:
         self.nameList = nameList
         self.sellers = [Seller(i, balance) for i in range(sellerNum)]
         self.consumers = [Consumer(i, nameList[i],preference=[-1 for j in range(sellerNum)]) for i in range(consumerNum)]
-        self.curConsumer = 0
+        self.curConsumer = -1
         self.dailyCost = dailyCost
         self.dailyIncome = dailyIncome
 
     def getCurrentConsumer(self):
+        return self.consumers[self.curConsumer]
+    def isLastConsumer(self):
+        return self.curConsumer==self.consumerNum-1
+    def getNextConsumer(self):
+        self.curConsumer = (self.curConsumer+1)%self.consumerNum
         return self.consumers[self.curConsumer]
 
     def getSellersFromIndex(self, sellerIdx: int) -> Seller:
@@ -114,27 +119,34 @@ class Game:
         while not self.gameOver:
             day+=1
             print(f"----Day {day}----")
+
             # Fetch the next game state
-            consumer = self.gameState.getCurrentConsumer()
-            # consumuer randomly choose one at first in each day
-            sellerIdx = consumer.chooseSeller(self.gameState.sellerNum)
-            print(f"Consumer {consumer.name} choose seller {sellerIdx}" )
-            sellerAgent = self.agents[sellerIdx]
-            # The seller give his choice(price)
-            sellerChoice = sellerAgent.getChoice(self.gameState)
-            print(f"Seller {sellerIdx} choose price {sellerChoice}")
-            # Consumer give his decision
-            eatIdx = consumer.eat(sellerIdx, sellerChoice)
-            print(f"Consumer {consumer.name} eat seller {eatIdx}")
-            if eatIdx != sellerIdx:
-                sellerAgent = self.agents[eatIdx]
+            while True:
+                consumer = self.gameState.getNextConsumer()
+
+                # consumuer randomly choose one at first in each day
+                sellerIdx = consumer.chooseSeller(self.gameState.sellerNum)
+                print(f"Consumer {consumer.name} choose seller {sellerIdx}" )
+                sellerAgent = self.agents[sellerIdx]
+                # The seller give his choice(price)
                 sellerChoice = sellerAgent.getChoice(self.gameState)
-                print(f"Seller {eatIdx} choose price {sellerChoice}")
-            print(f"previous consumer preference:{consumer.preference}")
-            print(f"previous seller balance: {self.gameState.getSellersFromIndex(eatIdx).getBalance()}")
-            self.gameState.update(eatIdx, sellerChoice)
-            print(f"consumer preference:{consumer.preference}")
-            print(f"seller balance: {self.gameState.getSellersFromIndex(eatIdx).getBalance()}")
-            self.gameOver = self.gameState.isWin() or self.gameState.isLose()
+                print(f"Seller {sellerIdx} choose price {sellerChoice}")
+                # Consumer give his decision
+                eatIdx = consumer.eat(sellerIdx, sellerChoice)
+                print(f"Consumer {consumer.name} eat seller {eatIdx}")
+                if eatIdx != sellerIdx:
+                    sellerAgent = self.agents[eatIdx]
+                    sellerChoice = sellerAgent.getChoice(self.gameState)
+                    print(f"Seller {eatIdx} choose price {sellerChoice}")
+                print(f"previous consumer preference:{consumer.preference}")
+                print(f"previous seller balance: {self.gameState.getSellersFromIndex(eatIdx).getBalance()}")
+                self.gameState.update(eatIdx, sellerChoice)
+                print(f"consumer preference:{consumer.preference}")
+                print(f"seller balance: {self.gameState.getSellersFromIndex(eatIdx).getBalance()}")
+                self.gameOver = self.gameState.isWin() or self.gameState.isLose()
+
+                if self.gameState.isLastConsumer() or self.gameOver:
+                    break
+        print(f"----Game Over----")
 
         return self.gameState

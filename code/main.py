@@ -226,7 +226,7 @@ if __name__ == '__main__':
                 consumerNum=2, nameList=['Tom', 'Jerry'],
                 balance=20, dailyCost=1, dailyIncome=0)
     finalGameState = game.run()
-    print(finalGameState.getScore())
+    print("Score:",finalGameState.getScore())
 
     # import cProfile
     # cProfile.run("runGames( **args )")
