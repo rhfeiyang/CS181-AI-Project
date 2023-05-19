@@ -118,7 +118,7 @@ class Game:
         day=0
         while not self.gameOver:
             day+=1
-            print(f"----Day {day}----")
+            print(f"----Day {day} start----")
 
             # Fetch the next game state
             while True:
@@ -126,27 +126,31 @@ class Game:
 
                 # consumuer randomly choose one at first in each day
                 sellerIdx = consumer.chooseSeller(self.gameState.sellerNum)
-                print(f"Consumer {consumer.name} choose seller {sellerIdx}" )
+                print(f"Consumer {consumer.name} visit seller {sellerIdx}" )
                 sellerAgent = self.agents[sellerIdx]
                 # The seller give his choice(price)
                 sellerChoice = sellerAgent.getChoice(self.gameState)
                 print(f"Seller {sellerIdx} choose price {sellerChoice}")
                 # Consumer give his decision
                 eatIdx = consumer.eat(sellerIdx, sellerChoice)
-                print(f"Consumer {consumer.name} eat seller {eatIdx}")
+                print(f"Consumer {consumer.name} decide to eat at seller {eatIdx}")
                 if eatIdx != sellerIdx:
                     sellerAgent = self.agents[eatIdx]
                     sellerChoice = sellerAgent.getChoice(self.gameState)
                     print(f"Seller {eatIdx} choose price {sellerChoice}")
-                print(f"previous consumer preference:{consumer.preference}")
-                print(f"previous seller balance: {self.gameState.getSellersFromIndex(eatIdx).getBalance()}")
-                self.gameState.update(eatIdx, sellerChoice)
-                print(f"consumer preference:{consumer.preference}")
-                print(f"seller balance: {self.gameState.getSellersFromIndex(eatIdx).getBalance()}")
-                self.gameOver = self.gameState.isWin() or self.gameState.isLose()
 
+                self.gameState.update(eatIdx, sellerChoice)
+                print(f"consumer {consumer.name} preference:{consumer.preference}")
+                print(f"seller {sellerIdx} balance: {self.gameState.getSellersFromIndex(eatIdx).getBalance()}")
+                self.gameOver = self.gameState.isWin() or self.gameState.isLose()
+                print(f"------------------")
                 if self.gameState.isLastConsumer() or self.gameOver:
                     break
+            print(f"----Day {day} End----")
+            for consumer in self.gameState.consumers:
+                print(f"Consumer {consumer.name} preference: {consumer.preference}")
+            for seller in self.gameState.sellers:
+                print(f"Seller {seller.index} balance: {seller.balance}")
         print(f"----Game Over----")
 
         return self.gameState
