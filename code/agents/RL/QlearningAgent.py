@@ -144,10 +144,13 @@ class ApproximateQAgent(SellerQAgent):
        should work as is.
     """
 
-    def __init__(self, extractor='IdentityExtractor', **args):
+    def __init__(self, weights=None, **args):
         self.featExtractor = Extractor()
         SellerQAgent.__init__(self, **args)
-        self.weights = utils.Counter()
+        if weights is None:
+            self.weights = utils.Counter()
+        else:
+            self.weights=weights
 
     def getWeights(self):
         return self.weights
@@ -200,9 +203,19 @@ class Extractor:
           Usually, the count will just be 1.0 for
           indicator functions.
         """
-        raise NotImplemented
+        # raise NotImplemented
         features = utils.Counter()
         features["bias"] = 1.0
+        features["balance"] = state.getScore()/50
+        features["dailyCost"]=state.dailyCost/20
+        features["dailyIncome"]=state.dailyIncome/10
+        for i in range(state.consumerNum):
+            for j in range(state.sellerNum):
+                features[f"consumer{i}_{j}"]=state.consumers[i].preference[j]/10
+        features["liveAgents"]=state.getLiveAgents()/state.sellerNum
+        features.divideAll(10.0)
+        return features
+
 
 
 

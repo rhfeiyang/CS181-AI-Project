@@ -222,7 +222,7 @@ if __name__ == '__main__':
     # args = readCommand(sys.argv[1:])  # Get game components based on input
     # runGames(**args)
 
-    game = Game([ExpectimaxAgent(), RandomSeller(index=1)],
+    game = Game([ApproximateQAgent(), RandomSeller(index=1)],
                 consumerNum=2, nameList=['Tom', 'Jerry'],
                 balance=20, dailyCost=1, dailyIncome=0)
     finalGameState = game.run()

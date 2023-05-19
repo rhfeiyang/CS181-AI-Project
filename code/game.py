@@ -51,6 +51,9 @@ class GameState:
     def getNumAgents(self):
         return self.sellerNum
 
+    def getLiveAgents(self):
+        return sum([i.isLive() for i in self.sellers])
+
     def getLegalChoices(self, agentIndex: int):
         return [SellerChoices.HIGH, SellerChoices.MEDIUM, SellerChoices.LOW, SellerChoices.SUPERLOW]
 

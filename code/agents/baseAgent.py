@@ -8,8 +8,8 @@ class Agent(Seller):
     def registerInitialState(self, state): # inspects the starting state
     """
 
-    def __init__(self, index=0):
-        super().__init__(self,index)
+    def __init__(self, index=0,balance=0):
+        super().__init__(index,balance)
 
     def getAction(self, state):
         utils.raiseNotDefined()
