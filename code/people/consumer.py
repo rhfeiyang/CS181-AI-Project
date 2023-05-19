@@ -1,10 +1,10 @@
 import random
 from .seller import Seller, SellerChoices
 from utils import flipCoin
-
+import numpy as np
 
 class Consumer:
-    def __init__(self, index: int, name: str, preference: int):
+    def __init__(self, index: int, name: str, preference: list[int] = None):
         """
         index: the index of the consumer
         name: the name of the consumer
@@ -12,7 +12,7 @@ class Consumer:
         """
         self.index: int = index
         self.name: str = name
-        self.preference: int = preference
+        self.preference: list[int] = preference
 
     def __str__(self):
         return f"Consumer {self.index} {self.name} {self.preference}"
@@ -20,21 +20,29 @@ class Consumer:
     def isPrefer(self, seller: int) -> bool:
         """
         seller: the id of seller asking
-        return: True: willing to pay, False: not willing to pay
+        return: if the seller is the one that the consumer has the highest preference
         """
-        return seller == self.preference
+        return np.argmax(self.preference)==seller
+    def hasPreference(self) -> bool:
+        # if not all value in preference list is -1, then has preference
+        return not all([x == -1 for x in self.preference])
 
     def getPreference(self) -> int:
-        return self.preference
+        return np.argmax(self.preference)
+
+    def preferenceUpdate(self, seller: int, price: int):
+        """
+        update the preference of the consumer
+        """
+        self.preference[seller] += (SellerChoices.MEDIUM-price)
 
     def chooseSeller(self, n: int) -> int:
         """
-        go around restaurants and choose the one with the lowest price
         n: the number of sellers
-        return: the id of seller chosen
+        return: the id of seller chosen(randomly)
         """
+        return random.randint(0, n - 1)
 
-        return random.randint(0, n-1)
 
     def eat(self, index: int, sellerChoice: SellerChoices):
         """
@@ -44,30 +52,28 @@ class Consumer:
         return: the index of the seller chosen to eat
         """
         # TODO: What if there are multiple sellers?
-        if sellerChoice == SellerChoices.NONE:
-            print(f"{self.name} is eating in restaurant {index} with superlow price")
-            return None
+        # if sellerChoice == SellerChoices.NONE:
+        #     print(f"{self.name} is eating in restaurant {index} with superlow price")
+        #     return None
 
         eatIdx = None
-        if self.preference != -1:  # has preference
-            if index == self.preference:
+        if self.hasPreference():  # has preference
+            if self.isPrefer(index):
                 eatIdx = index
             else:
                 if sellerChoice == SellerChoices.HIGH:
-                    eatIdx = self.preference
+                    eatIdx = self.getPreference()
                 elif sellerChoice == SellerChoices.MEDIUM:
-                    eatIdx = self.preference
+                    eatIdx = self.getPreference()
                 elif sellerChoice == SellerChoices.LOW:
                     eatIdx = index
                 elif sellerChoice == SellerChoices.SUPERLOW:
                     eatIdx = index
         else:  # no preference
-            # Two sellers
+            # eat here, but with preference changed
             eatIdx = index
-            if sellerChoice == SellerChoices.HIGH:
-                self.preference = 0 if index == 1 else 1
-            elif sellerChoice == SellerChoices.LOW or sellerChoice == SellerChoices.SUPERLOW:
-                self.preference = index
+
+
 
         # else:  # no preference
         #     # Multiple sellers

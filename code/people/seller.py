@@ -1,10 +1,9 @@
-
+import utils
 class SellerChoices:
-    HIGH = 'high'
-    MEDIUM = 'medium'
-    LOW = 'low'
-    SUPERLOW = 'superlow'
-    NONE = 'none'
+    HIGH = 12
+    MEDIUM = 10
+    LOW = 8
+    SUPERLOW = 6
 
 
 class Seller:
@@ -19,7 +18,7 @@ class Seller:
         '''
         self.index = index
         self.balance = balance
-        self.benefitRule = benefitRule
+        # self.benefitRule = benefitRule
 
     def isLive(self) -> bool:
         return self.balance > 0
@@ -37,4 +36,11 @@ class Seller:
         self.balance += price
 
     def getPaid(self, choice: SellerChoices):
-        self.balance += self.benefitRule[choice]
+        # seller get the benefit: choice-cost (average)
+        self.balance += (choice-SellerChoices.MEDIUM)
+
+    def getAction(self, state):
+        utils.raiseNotDefined()
+
+    def getChoice(self, state):
+        utils.raiseNotDefined()

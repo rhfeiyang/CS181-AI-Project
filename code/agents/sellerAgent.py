@@ -5,6 +5,7 @@ import utils
 
 class SellerAgent(Agent):
     def __init__(self, index):
+
         self.index = index
 
     def getChoice(self, state):
@@ -21,7 +22,8 @@ class SellerAgent(Agent):
 
 class RandomSeller(SellerAgent):
     '''A seller that always chooses a random action.'''
-
+    def __init__(self, index):
+        self.index = index
     def getDistribution(self, state):
         dist = utils.Counter()
         for a in state.getLegalChoices(self.index):
