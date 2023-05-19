@@ -146,11 +146,12 @@ class Game:
                 print(f"------------------")
                 if self.gameState.isLastConsumer() or self.gameOver:
                     break
-            print(f"----Day {day} End----")
+            print(f"Current game state:")
             for consumer in self.gameState.consumers:
                 print(f"Consumer {consumer.name} preference: {consumer.preference}")
             for seller in self.gameState.sellers:
                 print(f"Seller {seller.index} balance: {seller.balance}")
+            print(f"----Day {day} End----")
         print(f"----Game Over----")
 
         return self.gameState
