@@ -36,14 +36,15 @@ class Consumer:
 
         return random.randint(0, n-1)
 
-    def eat(self, index: int, choice: SellerChoices):
+    def eat(self, index: int, sellerChoice: SellerChoices):
         """
         eat the food
         index: the index of the seller
         choice: the choice of the price of the food that seller offers
         return: the index of the seller chosen to eat
         """
-        if choice == SellerChoices.NONE:
+        # TODO: What if there are multiple sellers?
+        if sellerChoice == SellerChoices.NONE:
             print(f"{self.name} is eating in restaurant {index} with superlow price")
             return None
 
@@ -52,20 +53,20 @@ class Consumer:
             if index == self.preference:
                 eatIdx = index
             else:
-                if choice == SellerChoices.HIGH:
+                if sellerChoice == SellerChoices.HIGH:
                     eatIdx = self.preference
-                elif choice == SellerChoices.MEDIUM:
+                elif sellerChoice == SellerChoices.MEDIUM:
                     eatIdx = self.preference
-                elif choice == SellerChoices.LOW:
+                elif sellerChoice == SellerChoices.LOW:
                     eatIdx = index
-                elif choice == SellerChoices.SUPERLOW:
+                elif sellerChoice == SellerChoices.SUPERLOW:
                     eatIdx = index
         else:  # no preference
             # Two sellers
             eatIdx = index
-            if choice == SellerChoices.HIGH:
+            if sellerChoice == SellerChoices.HIGH:
                 self.preference = 0 if index == 1 else 1
-            elif choice == SellerChoices.LOW or choice == SellerChoices.SUPERLOW:
+            elif sellerChoice == SellerChoices.LOW or sellerChoice == SellerChoices.SUPERLOW:
                 self.preference = index
 
         # else:  # no preference

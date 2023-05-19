@@ -111,9 +111,12 @@ class Game:
         while not self.gameOver:
             # Fetch the next game state
             consumer = self.gameState.getCurrentConsumer()
+            # consumuer randomly choose one at first in each day
             sellerIdx = consumer.chooseSeller(self.gameState.sellerNum)
             sellerAgent = self.agents[sellerIdx]
+            # The seller give his choice(price)
             sellerChoice = sellerAgent.getChoice(self.gameState)
+            # Consumer give his decision
             eatIdx = consumer.eat(sellerIdx, sellerChoice)
             if eatIdx != sellerIdx:
                 sellerAgent = self.agents[eatIdx]
