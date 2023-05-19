@@ -29,10 +29,12 @@ class ValueEstimationAgent(Agent):
         gamma    - discount factor
         numTraining - number of training episodes, i.e. no learning after these many episodes
         """
+        super().__init__()
         self.alpha = float(alpha)
         self.epsilon = float(epsilon)
         self.discount = float(gamma)
         self.numTraining = int(numTraining)
+
 
     ####################################
     #    Override These Functions      #
@@ -158,6 +160,7 @@ class ReinforcementAgent(ValueEstimationAgent):
         gamma    - discount factor
         numTraining - number of training episodes, i.e. no learning after these many episodes
         """
+        super().__init__()
         if actionFn == None:
             def actionFn(state): return state.getLegalActions()
         self.actionFn = actionFn
