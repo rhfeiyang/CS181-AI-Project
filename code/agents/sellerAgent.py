@@ -5,7 +5,7 @@ import utils
 
 class SellerAgent(Agent):
     def __init__(self, index):
-
+        super().__init__(index)
         self.index = index
 
     def getChoice(self, state):
@@ -23,7 +23,7 @@ class SellerAgent(Agent):
 class RandomSeller(SellerAgent):
     '''A seller that always chooses a random action.'''
     def __init__(self, index):
-        self.index = index
+        super().__init__(index)
     def getDistribution(self, state):
         dist = utils.Counter()
         for a in state.getLegalChoices(self.index):
@@ -36,7 +36,7 @@ class GreedySellerHigh(SellerAgent):
     '''A seller that always prefers to give a high price.'''
 
     def __init__(self, index):
-        self.index = index
+        super().__init__(index)
 
     def getDistribution(self, state):
         dist = utils.Counter()
@@ -57,7 +57,7 @@ class GreedySellerLow(SellerAgent):
     '''
 
     def __init__(self, index):
-        self.index = index
+        super().__init__(index)
 
     def getDistribution(self, state):
         dist = utils.Counter()
@@ -84,7 +84,7 @@ class GreedySellerSuperLow(SellerAgent):
     '''
 
     def __init__(self, index):
-        self.index = index
+        super().__init__(index)
 
     def getDistribution(self, state):
         dist = utils.Counter()

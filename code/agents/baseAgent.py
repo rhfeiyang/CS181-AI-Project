@@ -9,7 +9,10 @@ class Agent(Seller):
     """
 
     def __init__(self, index=0):
-        self.index = index
+        super().__init__(self,index)
 
     def getAction(self, state):
         utils.raiseNotDefined()
+
+    def getBalance(self) -> float:
+        return self._balance

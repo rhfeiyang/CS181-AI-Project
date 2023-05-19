@@ -17,27 +17,32 @@ class Seller:
         when balance<0, the seller go bankrupt
         '''
         self.index = index
-        self.balance = balance
+        self._balance = balance
         # self.benefitRule = benefitRule
 
     def isLive(self) -> bool:
-        return self.balance > 0
+        return self._balance > 0
 
-    def getBalance(self) -> float:
-        return self.balance
+    def setBalance(self, balance: float):
+        self._balance = balance
 
+    def getScore(self) -> float:
+        if(self.index==0):
+            return self._balance
+        else:
+            raise Exception("Only the first seller can get the score")
     def getIndex(self) -> int:
         return self.index
 
     def loseMoney(self, money: float):
-        self.balance -= money
+        self._balance -= money
 
     def getMoney(self, price: float):
-        self.balance += price
+        self._balance += price
 
     def getPaid(self, choice: SellerChoices):
         # seller get the benefit: choice-cost (average)
-        self.balance += (choice-SellerChoices.MEDIUM)
+        self._balance += (choice-SellerChoices.MEDIUM)
 
     def getAction(self, state):
         utils.raiseNotDefined()
