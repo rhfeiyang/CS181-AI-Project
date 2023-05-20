@@ -40,7 +40,7 @@ class ExpectimaxAgent(Agent):
         Your agent for the mini-contest
     """
 
-    def __init__(self, belief: SellerAgent, evalFn='betterEvaluationFunction', depth='3'):
+    def __init__(self, belief: SellerAgent, evalFn='betterEvaluationFunction', depth='2'):
         super().__init__()
         self.index = 0  # Pacman is always agent index 0
         self.evaluationFunction = utils.lookup(evalFn, globals())
@@ -90,7 +90,7 @@ class AlphaBetaAgent(Agent):
         Your minimax agent with alpha-beta pruning
     """
 
-    def __init__(self, evalFn='scoreEvaluationFunction', depth='3'):
+    def __init__(self, evalFn='betterEvaluationFunction', depth='1'):
         super().__init__()
         self.index = 0  # Pacman is always agent index 0
         self.evaluationFunction = utils.lookup(evalFn, globals())

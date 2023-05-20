@@ -2,6 +2,9 @@ from game import *
 from agents import *
 import random
 import sys
+from matplotlib import pyplot as plt
+import pickle
+import numpy as np
 
 
 class ClassicGameRules:
@@ -214,6 +217,59 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int,consumerNameList:
     return games
 
 
+def plot(games:Game = None):
+    def getSellerAgentName(agent:Agent):
+        if isinstance(agent, ExpectimaxAgent):
+            return 'ExpectimaxAgent'
+        elif isinstance(agent, AlphaBetaAgent):
+            return 'AlphaBetaAgent'
+        elif isinstance(agent, RandomSeller):
+            return 'RandomSeller'
+        elif isinstance(agent, neuralPredictSeller):
+            return 'neuralPredictSeller'
+        elif isinstance(agent, GreedySellerHigh):
+            return 'GreedySellerHigh'
+        elif isinstance(agent, GreedySellerLow):
+            return 'GreedySellerLow'
+        elif isinstance(agent, GreedySellerSuperLow):
+            return 'GreedySellerSuperLow'
+        return 'Unknown'
+    
+    if games != None:
+        with open('game.pkl', 'wb') as f:
+            pickle.dump(games, f)
+    else:
+        with open('game.pkl', 'rb') as f:
+            games = pickle.load(f)
+
+    sellerNum = games[0].sellerNum
+    x = np.arange(1, games[0].maxDay+1)
+    
+    sellerBalance = np.zeros(shape = (sellerNum, games[0].maxDay))
+    for game in games:
+        record = game.record
+        for i in range(sellerNum):
+            for j in range(len(record)):
+                sellerBalance[i][j] += record[j][-1]['seller'][i]['balance']
+    sellerBalance /= len(games)
+    
+    plt.figure()
+    for i in range(sellerNum):
+        plt.plot(x, sellerBalance[i], 
+                 label=f'{getSellerAgentName(games[0].agents[i])}', 
+                 linestyle='-' if i==0 else '--')
+    
+    
+    plt.title(f'Average Balance of Different Seller Agents in {len(games)} Games')
+    plt.xlabel('Day')
+    plt.ylabel('Balance')
+    plt.legend()
+    plt.xlim(1, game.maxDay)
+    # plt.show()
+    plt.savefig('output.png')
+    
+    
+
 if __name__ == '__main__':
     """
     The main function called when main.py is run
@@ -233,7 +289,7 @@ if __name__ == '__main__':
 
 
 
-    player = ExpectimaxAgent(neuralPredictSeller(1,sellerNum,consumerNum))
+    player = ExpectimaxAgent(GreedySellerHigh)
     rivals = [GreedySellerHigh(index=1)]
 
     # game = Game([ApproximateQAgent(), RandomSeller(index=1)],
@@ -242,7 +298,9 @@ if __name__ == '__main__':
 
     random.seed('cs181')
     # runGames(player, rivals, 5, record=True, numTraining=0)
-    runGames(player, rivals, 50,consumerNameList, record=False)
+    game = runGames(player, rivals, 50, consumerNameList, record=False)
+    
+    plot(game)
 
     # print("Score:",finalGameState.getScore())
 
