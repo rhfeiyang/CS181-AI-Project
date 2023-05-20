@@ -3,3 +3,4 @@ __pycache__/
 code/__pycache__/
 code/agents/__pycache__/
 code/people/__pycache__/
+.vscode/settings.json

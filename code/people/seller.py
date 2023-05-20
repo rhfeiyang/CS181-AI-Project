@@ -24,7 +24,8 @@ class Seller:
 
     def isLive(self) -> bool:
         return self._balance > 0
-
+    def getBalance(self) -> float:
+        return self._balance
     def setBalance(self, balance: float):
         self._balance = balance
 

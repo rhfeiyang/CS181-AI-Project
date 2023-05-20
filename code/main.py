@@ -162,7 +162,7 @@ def readCommand(argv):
     return args
 
 
-def runGames(player: Agent, rivals: List[Agent], numGames: int, record: bool, numTraining=0):
+def runGames(player: Agent, rivals: List[Agent], numGames: int,consumerNameList:List, record: bool, numTraining=0):
 
     games = []
 
@@ -182,7 +182,7 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, record: bool, nu
         #                      gameDisplay, beQuiet, catchExceptions)
 
         # consumerNameList = ['Tom', 'Jerry', 'a', 'b', 'c', 'd', 'e']
-        consumerNameList = ['Tom', 'Jerry']
+        
         game = Game([player]+rivals,
                     consumerNum=len(consumerNameList), nameList=consumerNameList,
                     balance=10*(len(consumerNameList)), dailyCost=1, dailyIncome=0, maxDay=100)
@@ -227,7 +227,13 @@ if __name__ == '__main__':
     """
     # args = readCommand(sys.argv[1:])  # Get game components based on input
     # runGames(**args)
-    player = AlphaBetaAgent()
+    consumerNameList = ['Tom', 'Jerry']
+    consumerNum = len(consumerNameList)
+    sellerNum = 2
+
+
+
+    player = ExpectimaxAgent(neuralPredictSeller(1,sellerNum,consumerNum))
     rivals = [GreedySellerHigh(index=1)]
 
     # game = Game([ApproximateQAgent(), RandomSeller(index=1)],
@@ -236,7 +242,7 @@ if __name__ == '__main__':
 
     random.seed('cs181')
     # runGames(player, rivals, 5, record=True, numTraining=0)
-    runGames(player, rivals, 50, record=False)
+    runGames(player, rivals, 50,consumerNameList, record=False)
 
     # print("Score:",finalGameState.getScore())
 

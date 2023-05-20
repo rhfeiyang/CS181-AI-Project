@@ -1,6 +1,8 @@
+from typing import Any
 from .baseAgent import Agent
 from people.seller import SellerChoices
 import utils
+import agents.ML.prediction as prediction
 
 
 class SellerAgent(Agent):
@@ -30,6 +32,28 @@ class RandomSeller(SellerAgent):
             dist[a] = 1.0
         dist.normalize()
         return dist
+    
+class neuralPredictSeller(SellerAgent):
+    '''A seller that always chooses a random action.'''
+    def __init__(self, index,sellerNum,consumerNum):
+        super().__init__(index)
+        self.index = index
+        self.model = prediction.neuralNetworkPredictionModel(sellerNum,consumerNum,index)
+    def getDistribution(self, state):
+        prob = self.model.predictSoftmax(state.getCurrentConsumer(),state.getSellersFromIndex(self.index).getBalance())
+        # squeeze the prob
+        prob = prob.squeeze()
+        dist = utils.Counter()
+        for idx,a in enumerate(state.getLegalChoices(self.index)):
+            dist[a] = prob[idx]
+        dist.normalize()
+        return dist
+    
+    def addObservation(self, state, action):
+        self.model.addData(state.getCurrentConsumer(),state.getSellersFromIndex(self.index).getBalance() ,action)
+
+    def __call__(self, state):
+        return self
 
 
 class GreedySellerHigh(SellerAgent):
