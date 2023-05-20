@@ -69,7 +69,6 @@ class GameState:
         Copy the current GameState
         return: the copy of the current GameState
         '''
-        newGameState = copy.deepcopy(self)
         # newGameState = GameState(self.sellers.copy(),self.sellerNum, self.consumerNum, self.nameList, 0.0, self.dailyCost, self.dailyIncome)
         # newGameState.consumerNum = self.consumerNum
         # newGameState.sellerNum = self.sellerNum
@@ -77,7 +76,7 @@ class GameState:
         # newGameState.curConsumer = self.curConsumer
         # newGameState.dailyCost = self.dailyCost
         # newGameState.dailyIncome = self.dailyIncome
-        return newGameState
+        return deepcopy(self)
 
     def getNextState(self, agentIndex: int, choice: int):
         '''
@@ -92,7 +91,7 @@ class GameState:
 
         if eatIdx != agentIndex:
             sellerAgent = self.sellers[eatIdx]
-            choice = sellerAgent.getChoice(self)
+            choice = sellerAgent.getChoice(newGameState) if eatIdx != 0 else SellerChoices.HIGH
             newGameState.updateConsumer(eatIdx, choice)
 
         newGameState.updateSeller(eatIdx, choice)
@@ -197,11 +196,12 @@ class Game:
                     sellerAgent = self.agents[eatIdx]
                     sellerChoice = sellerAgent.getChoice(self.state)
                     # print(f"Seller {eatIdx} choose price {sellerChoice}")
+                    consumer.preferenceUpdate(eatIdx, sellerChoice)
                     self.record[-1][-1]["sellerChoice"].append(sellerChoice)
 
                 self.state.updateSeller(eatIdx, sellerChoice)
                 # print(f"consumer {consumer.name} preference:{consumer.preference}")
-                self.record[-1][-1]["consumerPreference"] = consumer.preference
+                self.record[-1][-1]["consumerPreference"] = consumer.preference.copy()
                 # print(f"seller {sellerIdx} balance: {self.agents[sellerIdx].getBalance()}")
                 self.record[-1][-1]["sellerBalance"] = self.agents[eatIdx].getBalance()
                 self.gameOver = self.state.isWin() or self.state.isLose()
@@ -215,7 +215,7 @@ class Game:
             self.record[-1][-1]["consumer"] = []
             for consumer in self.state.consumers:
                 # print(f"Consumer {consumer.name} preference: {consumer.preference}")
-                self.record[-1][-1]["consumer"].append({"name": consumer.name, "preference": consumer.preference})
+                self.record[-1][-1]["consumer"].append({"name": consumer.name, "preference": consumer.preference.copy()})
             self.record[-1][-1]["seller"] = []
             for seller in self.agents:
                 # print(f"Seller {seller.index} balance: {seller.getBalance()}")

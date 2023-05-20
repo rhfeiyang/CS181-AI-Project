@@ -43,7 +43,7 @@ class Seller:
     def getMoney(self, price: float):
         self._balance += price
 
-    def getPaid(self, choice: SellerChoices):
+    def getPaid(self, choice: int):
         # seller get the benefit: choice-cost (average)
         self._balance += (choice-SellerChoices.MEDIUM)
 

@@ -23,7 +23,7 @@ class ExpectimaxAgent(Agent):
         Your agent for the mini-contest
     """
 
-    def __init__(self, belief: SellerAgent, evalFn='scoreEvaluationFunction', depth='2'):
+    def __init__(self, belief: SellerAgent, evalFn='scoreEvaluationFunction', depth='3'):
         super().__init__()
         self.index = 0  # Pacman is always agent index 0
         self.evaluationFunction = utils.lookup(evalFn, globals())
