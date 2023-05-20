@@ -246,12 +246,14 @@ def plot(games:Game = None):
     x = np.arange(1, games[0].maxDay+1)
     
     sellerBalance = np.zeros(shape = (sellerNum, games[0].maxDay))
+    weight = np.zeros(shape = (sellerNum, games[0].maxDay))
     for game in games:
         record = game.record
         for i in range(sellerNum):
             for j in range(len(record)):
                 sellerBalance[i][j] += record[j][-1]['seller'][i]['balance']
-    sellerBalance /= len(games)
+                weight[i][j] += 1
+    sellerBalance /= weight
     
     plt.figure()
     for i in range(sellerNum):
@@ -289,8 +291,8 @@ if __name__ == '__main__':
 
 
 
-    player = ExpectimaxAgent(GreedySellerHigh)
-    rivals = [GreedySellerHigh(index=1)]
+    player = ExpectimaxAgent(GreedySellerLow)
+    rivals = [GreedySellerLow(index=1)]
 
     # game = Game([ApproximateQAgent(), RandomSeller(index=1)],
     #             consumerNum=2, nameList=['Tom', 'Jerry'],
