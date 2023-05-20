@@ -13,6 +13,7 @@ class Consumer:
         self.index: int = index
         self.name: str = name
         self.preference: List[int] = preference
+        self.belief: float = SellerChoices.MEDIUM
 
     def __str__(self):
         return f"Consumer {self.index} {self.name} {self.preference}"
@@ -25,7 +26,7 @@ class Consumer:
         return np.argmax(self.preference)==seller
     def hasPreference(self) -> bool:
         # if not all value in preference list is -1, then has preference
-        return not all([x == -1 for x in self.preference])
+        return not all([x == 0 for x in self.preference])
 
     def getPreference(self) -> int:
         return np.argmax(self.preference)
@@ -34,7 +35,8 @@ class Consumer:
         """
         update the preference of the consumer
         """
-        self.preference[seller] += (SellerChoices.MEDIUM-price)
+        # self.belief = 0.9 * self.belief + 0.1 * price
+        self.preference[seller] += SellerChoices.MEDIUM - price
 
     def chooseSeller(self, n: int) -> int:
         """
@@ -42,15 +44,6 @@ class Consumer:
         return: the id of seller chosen(randomly)
         """
         return random.randint(0, n - 1)
-
-    def eat(self, index: int, sellerChoice: int):
-        """
-        exactly eat the food
-        index: the index of the seller
-        choice: the choice of the price of the food that seller offers
-        """
-        self.preferenceUpdate(index, sellerChoice)
-
 
 
     def decide(self, index: int, sellerChoice: int):
@@ -64,7 +57,7 @@ class Consumer:
         # if sellerChoice == SellerChoices.NONE:
         #     print(f"{self.name} is eating in restaurant {index} with superlow price")
         #     return None
-        self.preferenceUpdate(index, sellerChoice)
+
         eatIdx = None
         if self.hasPreference():  # has preference
             if self.isPrefer(index):
@@ -93,4 +86,5 @@ class Consumer:
         #         self.preference = index
 
         # print(f"{self.name} is eating in restaurant {eatIdx} with superlow price")
+        self.preferenceUpdate(index, sellerChoice)
         return eatIdx

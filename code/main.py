@@ -233,7 +233,7 @@ if __name__ == '__main__':
 
     random.seed('cs181')
     # runGames(player, rivals, 5, record=True, numTraining=0)
-    runGames(player, rivals, 5, record=False)
+    runGames(player, rivals, 5, record=True)
 
     # print("Score:",finalGameState.getScore())
 

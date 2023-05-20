@@ -27,7 +27,7 @@ class GameState:
         self.sellers: List[Seller] = agents
         for agent in agents:
             agent.setBalance(balance)
-        self.consumers = [Consumer(i, nameList[i], preference=[-1 for j in range(sellerNum)])
+        self.consumers = [Consumer(i, nameList[i], preference=[0 for j in range(sellerNum)])
                           for i in range(consumerNum)]
         self.curConsumer = -1
         self.dailyCost = dailyCost
@@ -91,7 +91,7 @@ class GameState:
 
         if eatIdx != agentIndex:
             sellerAgent = self.sellers[eatIdx]
-            choice = sellerAgent.getChoice(newGameState) if eatIdx != 0 else SellerChoices.HIGH
+            choice = sellerAgent.getChoice(newGameState) if eatIdx != 0 else SellerChoices.MEDIUM
             newGameState.updateConsumer(eatIdx, choice)
 
         newGameState.updateSeller(eatIdx, choice)
@@ -103,6 +103,8 @@ class GameState:
         for seller in self.sellers:
             seller.loseMoney(self.dailyCost)
             seller.getMoney(self.dailyIncome)
+        for consumer in self.consumers:
+            consumer.preference=[i*0.9 for i in consumer.preference]
 
     def updateConsumer(self,sellerIdx: int, choice: int):
         self.getCurrentConsumer().preferenceUpdate(sellerIdx, choice)
@@ -190,6 +192,7 @@ class Game:
                 self.record[-1][-1]["sellerChoice"] = [sellerChoice]
                 # Consumer give his decision
                 eatIdx = consumer.decide(sellerIdx, sellerChoice)
+                # print(f"consumer's preference: {consumer.preference}")
                 # print(f"Consumer {consumer.name} decide to eat at seller {eatIdx}")
                 self.record[-1][-1]["consumerChoice"] = eatIdx
                 if eatIdx != sellerIdx:
