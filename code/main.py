@@ -199,7 +199,7 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, record:bool, num
 
     if (numGames-numTraining) > 0:
         scores = [game.playerScore for game in games]
-        wins = [game.state.isWin() for game in games]
+        wins = [game.isWin for game in games]
         winRate = wins.count(True) / float(len(wins))
         print('Average Score:', sum(scores) / float(len(scores)))
         print('Scores:       ', ', '.join([str(score) for score in scores]))

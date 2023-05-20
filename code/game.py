@@ -184,12 +184,13 @@ class Game:
                 # print(f"consumer {consumer.name} preference:{consumer.preference}")
                 self.record[-1][-1]["consumerPreference"]=consumer.preference
                 # print(f"seller {sellerIdx} balance: {self.agents[sellerIdx].getBalance()}")
-                self.record[-1][-1]["sellerBalance"]=self.agents[sellerIdx].getBalance()
+                self.record[-1][-1]["sellerBalance"]=self.agents[eatIdx].getBalance()
                 self.gameOver = self.state.isWin() or self.state.isLose()
                 # print(f"------------------")
                 if self.state.isLastConsumer() or self.gameOver:
                     break
             self.state.updateDaily()
+            self.gameOver = self.state.isWin() or self.state.isLose()
             # print(f"Current game state:")
             self.record[-1].append({})
             self.record[-1][-1]["consumer"]=[]
@@ -201,6 +202,7 @@ class Game:
                 # print(f"Seller {seller.index} balance: {seller.getBalance()}")
                 self.record[-1][-1]["seller"].append({"name":seller.index,"balance":seller.getBalance()})
         self.playerScore=self.agents[0].getBalance()
+        self.isWin=self.state.isWin()
             # print(f"----Day {day} End----")
         # print(f"----Game Over----")
 
