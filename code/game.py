@@ -32,6 +32,7 @@ class GameState:
         self.curConsumer = -1
         self.dailyCost = dailyCost
         self.dailyIncome = dailyIncome
+        self.force = False
 
     def getCurrentConsumer(self):
         return self.consumers[self.curConsumer]
@@ -87,12 +88,19 @@ class GameState:
         '''
         newGameState = self.copy()
         consumer = newGameState.getCurrentConsumer()
-        eatIdx = consumer.decide(agentIndex, choice)
+        if not self.force:
+            eatIdx = consumer.decide(agentIndex, choice)
+            if eatIdx != agentIndex:
+                newGameState.force = True
+                return newGameState
+        else:
+            eatIdx = agentIndex
+            newGameState.force = False
 
-        if eatIdx != agentIndex:
-            sellerAgent = self.sellers[eatIdx]
-            choice = sellerAgent.getChoice(newGameState) if eatIdx != 0 else SellerChoices.MEDIUM
-            newGameState.updateConsumer(eatIdx, choice)
+        # if eatIdx != agentIndex:
+        #     sellerAgent = self.sellers[eatIdx]
+        #     choice = sellerAgent.getChoice(newGameState) if eatIdx != 0 else SellerChoices.SUPERLOW
+        #     newGameState.updateConsumer(eatIdx, choice)
 
         newGameState.updateSeller(eatIdx, choice)
         if self.isLastConsumer():
@@ -104,9 +112,9 @@ class GameState:
             seller.loseMoney(self.dailyCost)
             seller.getMoney(self.dailyIncome)
         for consumer in self.consumers:
-            consumer.preference=[i*0.9 for i in consumer.preference]
+            consumer.preference = [i*0.9 for i in consumer.preference]
 
-    def updateConsumer(self,sellerIdx: int, choice: int):
+    def updateConsumer(self, sellerIdx: int, choice: int):
         self.getCurrentConsumer().preferenceUpdate(sellerIdx, choice)
 
     def updateSeller(self, eatIndex: int, choice: int):
@@ -118,7 +126,6 @@ class GameState:
         '''
 
         self.sellers[eatIndex].getPaid(choice)
-
 
 
 class Game:
@@ -218,7 +225,8 @@ class Game:
             self.record[-1][-1]["consumer"] = []
             for consumer in self.state.consumers:
                 # print(f"Consumer {consumer.name} preference: {consumer.preference}")
-                self.record[-1][-1]["consumer"].append({"name": consumer.name, "preference": consumer.preference.copy()})
+                self.record[-1][-1]["consumer"].append({"name": consumer.name,
+                                                       "preference": consumer.preference.copy()})
             self.record[-1][-1]["seller"] = []
             for seller in self.agents:
                 # print(f"Seller {seller.index} balance: {seller.getBalance()}")
