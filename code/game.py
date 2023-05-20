@@ -70,14 +70,10 @@ class GameState:
         Copy the current GameState
         return: the copy of the current GameState
         '''
-        # newGameState = GameState(self.sellers.copy(),self.sellerNum, self.consumerNum, self.nameList, 0.0, self.dailyCost, self.dailyIncome)
-        # newGameState.consumerNum = self.consumerNum
-        # newGameState.sellerNum = self.sellerNum
-        # newGameState.consumers = [Consumer(i, self.nameList[i], self.consumers[i].preference.copy()) for i in range(self.consumerNum)]
-        # newGameState.curConsumer = self.curConsumer
-        # newGameState.dailyCost = self.dailyCost
-        # newGameState.dailyIncome = self.dailyIncome
-        return deepcopy(self)
+        newGameState = GameState(self.sellers.copy(),self.sellerNum, self.consumerNum, self.nameList, None, self.dailyCost, self.dailyIncome)
+        newGameState.consumers = [Consumer(i, self.nameList[i], self.consumers[i].preference.copy()) for i in range(self.consumerNum)]
+        newGameState.curConsumer = self.curConsumer
+
 
     def getNextState(self, agentIndex: int, choice: int):
         '''
