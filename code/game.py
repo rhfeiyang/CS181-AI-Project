@@ -37,6 +37,9 @@ class GameState:
     def getCurrentConsumer(self):
         return self.consumers[self.curConsumer]
 
+    def getAllConsumersPreference(self):
+        return [consumer.preference for consumer in self.consumers]
+
     def isLastConsumer(self):
         return self.curConsumer == self.consumerNum-1
 
@@ -55,6 +58,9 @@ class GameState:
 
     def getScore(self):
         return self.sellers[0].getScore()
+
+    def getAllScore(self):
+        return [seller.getScore() for seller in self.sellers]
 
     def getNumAgents(self):
         return self.sellerNum
@@ -150,7 +156,7 @@ class Game:
         print("----Game Start----")
         for day in range(len(self.record)):
             dayRecord = self.record[day]
-            print(f"----Day {day+1} start----")
+            # print(f"----Day {day+1} start----")
             for consumerRecord in dayRecord[0:-1]:
                 print(f"Consumer {consumerRecord['comsumerName']} visit seller {consumerRecord['consumerVisit']}")
                 print(f"Seller {consumerRecord['consumerVisit']} choose price {consumerRecord['sellerChoice'][0]}")
@@ -182,7 +188,7 @@ class Game:
         day = 0
         while not self.gameOver and day < self.maxDay:
             day += 1
-            # print(f"----Day {day} start----")
+            print(f"----Day {day} start----")
             self.record.append([])
             # Fetch the next game state
             while True:

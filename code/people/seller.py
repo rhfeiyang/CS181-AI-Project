@@ -29,10 +29,10 @@ class Seller:
         self._balance = balance
 
     def getScore(self) -> float:
-        if(self.index == 0):
-            return self._balance
-        else:
-            raise Exception("Only the first seller can get the score")
+        # if(self.index == 0):
+        return self._balance
+        # else:
+        #     raise Exception("Only the first seller can get the score")
 
     def getIndex(self) -> int:
         return self.index
