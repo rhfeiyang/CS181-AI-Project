@@ -162,7 +162,7 @@ def readCommand(argv):
     return args
 
 
-def runGames(player: Agent, rivals: list[Agent], numGames: int, record:bool, numTraining=0):
+def runGames(player: Agent, rivals: List[Agent], numGames: int, record:bool, numTraining=0):
 
     games = []
 

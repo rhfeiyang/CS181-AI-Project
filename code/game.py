@@ -4,6 +4,7 @@ import utils
 from people import Seller, SellerChoices, Consumer
 from agents import Agent
 from copy import deepcopy
+from typing import List
 class Configuration:
     pass
 
@@ -13,14 +14,14 @@ class AgentState:
 
 
 class GameState:
-    def __init__(self,agents: list[Seller], sellerNum: int, consumerNum: int, nameList: list, balance: float, dailyCost: float = 0, dailyIncome: float = 0):
+    def __init__(self,agents: List[Seller], sellerNum: int, consumerNum: int, nameList: list, balance: float, dailyCost: float = 0, dailyIncome: float = 0):
         '''
         balance: at the start, all the sellers have the same balance(property)
         '''
         self.sellerNum = sellerNum
         self.consumerNum = consumerNum
         self.nameList = nameList
-        self.sellers:list[Seller] = agents
+        self.sellers:List[Seller] = agents
         for agent in agents:
             agent.setBalance(balance)
         self.consumers = [Consumer(i, nameList[i],preference=[-1 for j in range(sellerNum)]) for i in range(consumerNum)]
@@ -103,8 +104,8 @@ class GameState:
 
 
 class Game:
-    def __init__(self, agents: list[Agent], consumerNum, nameList, balance, dailyCost, dailyIncome):
-        self.agents:list[Agent] = agents
+    def __init__(self, agents: List[Agent], consumerNum, nameList, balance, dailyCost, dailyIncome):
+        self.agents:List[Agent] = agents
         self.sellerNum = len(agents)
         self.consumerNum = consumerNum
         self.nameList = nameList

@@ -2,9 +2,9 @@ import random
 from .seller import Seller, SellerChoices
 from utils import flipCoin
 import numpy as np
-
+from typing import List
 class Consumer:
-    def __init__(self, index: int, name: str, preference: list[int] = None):
+    def __init__(self, index: int, name: str, preference: List[int] = None):
         """
         index: the index of the consumer
         name: the name of the consumer
@@ -12,7 +12,7 @@ class Consumer:
         """
         self.index: int = index
         self.name: str = name
-        self.preference: list[int] = preference
+        self.preference: List[int] = preference
 
     def __str__(self):
         return f"Consumer {self.index} {self.name} {self.preference}"
