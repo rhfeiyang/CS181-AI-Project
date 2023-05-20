@@ -180,9 +180,12 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, record: bool, nu
             pass
         # game = rules.newGame(layout, pacman, ghosts,
         #                      gameDisplay, beQuiet, catchExceptions)
+
+        # consumerNameList = ['Tom', 'Jerry', 'a', 'b', 'c', 'd', 'e']
+        consumerNameList = ['Tom', 'Jerry']
         game = Game([player]+rivals,
-                    consumerNum=2, nameList=['Tom', 'Jerry'],
-                    balance=20, dailyCost=1, dailyIncome=0, maxDay=100)
+                    consumerNum=len(consumerNameList), nameList=consumerNameList,
+                    balance=10*(len(consumerNameList)), dailyCost=1, dailyIncome=0, maxDay=100)
         game.run()
         if not beQuiet:
             games.append(game)
@@ -224,9 +227,7 @@ if __name__ == '__main__':
     """
     # args = readCommand(sys.argv[1:])  # Get game components based on input
     # runGames(**args)
-    player = ExpectimaxAgent(GreedySellerLow)
-    randomPlayer= [RandomSeller(index=1)]
-    RLplayer= ApproximateQAgent()
+    player = AlphaBetaAgent()
     rivals = [GreedySellerHigh(index=1)]
 
     # game = Game([ApproximateQAgent(), RandomSeller(index=1)],
@@ -235,7 +236,7 @@ if __name__ == '__main__':
 
     random.seed('cs181')
     # runGames(player, rivals, 5, record=True, numTraining=0)
-    runGames(RLplayer, rivals, 5000, record=False, numTraining=4995)
+    runGames(player, rivals, 50, record=False)
 
     # print("Score:",finalGameState.getScore())
 

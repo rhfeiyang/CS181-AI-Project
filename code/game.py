@@ -42,6 +42,9 @@ class GameState:
     def getCurrentConsumer(self):
         return self.consumers[self.curConsumer]
 
+    def getAllConsumersPreference(self):
+        return [consumer.preference for consumer in self.consumers]
+
     def isLastConsumer(self):
         return self.curConsumer == self.consumerNum-1
 
@@ -60,6 +63,9 @@ class GameState:
 
     def getScore(self, agentIndex: int=0):
         return self.sellers[agentIndex].getScore()
+
+    def getAllScore(self):
+        return [seller.getScore() for seller in self.sellers]
 
     def getNumAgents(self):
         return self.sellerNum
@@ -153,7 +159,7 @@ class Game:
         print("----Game Start----")
         for day in range(len(self.record)):
             dayRecord = self.record[day]
-            print(f"----Day {day+1} start----")
+            # print(f"----Day {day+1} start----")
             for consumerRecord in dayRecord[0:-1]:
                 print(f"Consumer {consumerRecord['comsumerName']} visit seller {consumerRecord['consumerVisit']}")
                 print(f"Seller {consumerRecord['consumerVisit']} choose price {consumerRecord['sellerChoice'][0]}")
@@ -187,7 +193,7 @@ class Game:
         #     self.agents[0].registerInitialState(self.state)
         while not self.gameOver and day < self.maxDay:
             day += 1
-            # print(f"----Day {day} start----")
+            print(f"----Day {day} start----")
             self.record.append([])
             print(self.agents[0].weights)
             # Fetch the next game state
