@@ -195,7 +195,7 @@ class Game:
             day += 1
             print(f"----Day {day} start----")
             self.record.append([])
-            print(self.agents[0].weights)
+            # print(self.agents[0].weights)
             # Fetch the next game state
             while True:
                 consumer = self.state.getNextConsumer()
