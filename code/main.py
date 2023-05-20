@@ -162,40 +162,43 @@ def readCommand(argv):
     return args
 
 
-def runGames(layout, pacman, ghosts, display, numGames, record, numTraining=0, catchExceptions=False, timeout=30):
-    import __main__
-    __main__.__dict__['_display'] = display
+def runGames(player: Agent, rivals: list[Agent], numGames: int, record:bool, numTraining=0):
 
-    rules = ClassicGameRules(timeout)
     games = []
 
     for i in range(numGames):
         beQuiet = i < numTraining
         if beQuiet:
             # Suppress output and graphics
-            import textDisplay
-            gameDisplay = textDisplay.NullGraphics()
-            rules.quiet = True
+            # import textDisplay
+            # gameDisplay = textDisplay.NullGraphics()
+            # rules.quiet = True
+            pass
         else:
-            gameDisplay = display
-            rules.quiet = False
-        game = rules.newGame(layout, pacman, ghosts,
-                             gameDisplay, beQuiet, catchExceptions)
+            # gameDisplay = display
+            # rules.quiet = False
+            pass
+        # game = rules.newGame(layout, pacman, ghosts,
+        #                      gameDisplay, beQuiet, catchExceptions)
+        game = Game([player]+rivals,
+                    consumerNum=2, nameList=['Tom', 'Jerry'],
+                    balance=20, dailyCost=1, dailyIncome=0)
         game.run()
         if not beQuiet:
             games.append(game)
 
         if record:
-            import time
-            import pickle
-            fname = ('recorded-game-%d' % (i + 1)) + \
-                '-'.join([str(t) for t in time.localtime()[1:6]])
-            with open(fname, 'w') as f:
-                components = {'layout': layout, 'actions': game.moveHistory}
-                pickle.dump(components, f)
+            # import time
+            # import pickle
+            # fname = ('recorded-game-%d' % (i + 1)) + \
+            #     '-'.join([str(t) for t in time.localtime()[1:6]])
+            # with open(fname, 'w') as f:
+            #     components = {'layout': layout, 'actions': game.moveHistory}
+            #     pickle.dump(components, f)
+            game.showRecord()
 
     if (numGames-numTraining) > 0:
-        scores = [game.state.getScore() for game in games]
+        scores = [game.playerScore for game in games]
         wins = [game.state.isWin() for game in games]
         winRate = wins.count(True) / float(len(wins))
         print('Average Score:', sum(scores) / float(len(scores)))
@@ -221,12 +224,17 @@ if __name__ == '__main__':
     """
     # args = readCommand(sys.argv[1:])  # Get game components based on input
     # runGames(**args)
+    player=ApproximateQAgent()
+    rivals=[RandomSeller(index=1)]
 
-    game = Game([ApproximateQAgent(), RandomSeller(index=1)],
-                consumerNum=2, nameList=['Tom', 'Jerry'],
-                balance=20, dailyCost=1, dailyIncome=0)
-    finalGameState = game.run()
-    print("Score:",finalGameState.getScore())
+
+    # game = Game([ApproximateQAgent(), RandomSeller(index=1)],
+    #             consumerNum=2, nameList=['Tom', 'Jerry'],
+    #             balance=20, dailyCost=1, dailyIncome=0)
+
+    runGames(player, rivals, 5, record=True, numTraining=0)
+
+    # print("Score:",finalGameState.getScore())
 
     # import cProfile
     # cProfile.run("runGames( **args )")

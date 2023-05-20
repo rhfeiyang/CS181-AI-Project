@@ -113,55 +113,94 @@ class Game:
         self.dailyIncome = dailyIncome
 
         self.gameOver = False
+        self.record=[]
+        # self.record={"day":[],"score":[],"balance":[],"consumerVisit":[],"agentChoice":[],"consumerPreference":[]}
         # self.agentTimeout = False
         # import io
         # self.agentOutput = [io.StringIO() for agent in agents]
 
-
+    def showRecord(self):
+        print("----Game Start----")
+        for day in range(len(self.record)):
+            dayRecord=self.record[day]
+            print(f"----Day {day+1} start----")
+            for consumerRecord in dayRecord[0:-1]:
+                print(f"Consumer {consumerRecord['comsumerName']} visit seller {consumerRecord['consumerVisit']}")
+                print(f"Seller {consumerRecord['consumerVisit']} choose price {consumerRecord['sellerChoice'][0]}")
+                if(consumerRecord['consumerChoice']!=consumerRecord['consumerVisit']):
+                    print("Comsumer is not satisfied with the price")
+                    print(f"Consumer {consumerRecord['comsumerName']} decide to eat at seller {consumerRecord['consumerChoice']}")
+                    print(f"Seller {consumerRecord['consumerChoice']} choose price {consumerRecord['sellerChoice'][1]}")
+                else:
+                    print("Comsumer is satisfied with the price")
+                print(f"Consumer {consumerRecord['comsumerName']} preference {consumerRecord['consumerPreference']}")
+                print(f"Seller {consumerRecord['consumerChoice']} balance {consumerRecord['sellerBalance']}")
+                print(f"------------------")
+            print("Current game state:")
+            for consumer in dayRecord[-1]["consumer"]:
+                print(f"Consumer {consumer['name']} preference {consumer['preference']}")
+            for seller in dayRecord[-1]["seller"]:
+                print(f"Seller {seller['name']} balance {seller['balance']}")
+            print(f"----Day {day+1} End----")
+        print(f"----Game Over----")
+        print(f"Player score: {dayRecord[-1]['seller'][0]['balance']}")
+            
     def run(self):
         '''
         Main control loop for game play.
         '''
-        self.gameState = GameState(self.agents,self.sellerNum, self.consumerNum, self.nameList,
-                                   self.balance, self.dailyCost, self.dailyIncome)
+        self.state = GameState(self.agents, self.sellerNum, self.consumerNum, self.nameList,
+                               self.balance, self.dailyCost, self.dailyIncome)
         day=0
         while not self.gameOver:
             day+=1
-            print(f"----Day {day} start----")
-
+            # print(f"----Day {day} start----")
+            self.record.append([])
             # Fetch the next game state
             while True:
-                consumer = self.gameState.getNextConsumer()
-
+                consumer = self.state.getNextConsumer()
+                self.record[-1].append({"comsumerName":consumer.name})
                 # consumuer randomly choose one at first in each day
-                sellerIdx = consumer.chooseSeller(self.gameState.sellerNum)
-                print(f"Consumer {consumer.name} visit seller {sellerIdx}" )
+                sellerIdx = consumer.chooseSeller(self.state.sellerNum)
+                # print(f"Consumer {consumer.name} visit seller {sellerIdx}" )
+                self.record[-1][-1]["consumerVisit"]=sellerIdx
                 sellerAgent = self.agents[sellerIdx]
                 # The seller give his choice(price)
-                sellerChoice = sellerAgent.getChoice(self.gameState)
-                print(f"Seller {sellerIdx} choose price {sellerChoice}")
+                sellerChoice = sellerAgent.getChoice(self.state)
+                # print(f"Seller {sellerIdx} choose price {sellerChoice}")
+                self.record[-1][-1]["sellerChoice"]=[sellerChoice]
                 # Consumer give his decision
                 eatIdx = consumer.eat(sellerIdx, sellerChoice)
-                print(f"Consumer {consumer.name} decide to eat at seller {eatIdx}")
+                # print(f"Consumer {consumer.name} decide to eat at seller {eatIdx}")
+                self.record[-1][-1]["consumerChoice"]=eatIdx
                 if eatIdx != sellerIdx:
                     sellerAgent = self.agents[eatIdx]
-                    sellerChoice = sellerAgent.getChoice(self.gameState)
-                    print(f"Seller {eatIdx} choose price {sellerChoice}")
+                    sellerChoice = sellerAgent.getChoice(self.state)
+                    # print(f"Seller {eatIdx} choose price {sellerChoice}")
+                    self.record[-1][-1]["sellerChoice"].append(sellerChoice)
 
-                self.gameState.updateOnce(eatIdx, sellerChoice)
-                print(f"consumer {consumer.name} preference:{consumer.preference}")
-                print(f"seller {sellerIdx} balance: {self.agents[sellerIdx].getBalance()}")
-                self.gameOver = self.gameState.isWin() or self.gameState.isLose()
-                print(f"------------------")
-                if self.gameState.isLastConsumer() or self.gameOver:
+                self.state.updateOnce(eatIdx, sellerChoice)
+                # print(f"consumer {consumer.name} preference:{consumer.preference}")
+                self.record[-1][-1]["consumerPreference"]=consumer.preference
+                # print(f"seller {sellerIdx} balance: {self.agents[sellerIdx].getBalance()}")
+                self.record[-1][-1]["sellerBalance"]=self.agents[sellerIdx].getBalance()
+                self.gameOver = self.state.isWin() or self.state.isLose()
+                # print(f"------------------")
+                if self.state.isLastConsumer() or self.gameOver:
                     break
-            self.gameState.updateDaily()
-            print(f"Current game state:")
-            for consumer in self.gameState.consumers:
-                print(f"Consumer {consumer.name} preference: {consumer.preference}")
+            self.state.updateDaily()
+            # print(f"Current game state:")
+            self.record[-1].append({})
+            self.record[-1][-1]["consumer"]=[]
+            for consumer in self.state.consumers:
+                # print(f"Consumer {consumer.name} preference: {consumer.preference}")
+                self.record[-1][-1]["consumer"].append({"name":consumer.name,"preference":consumer.preference})
+            self.record[-1][-1]["seller"]=[]
             for seller in self.agents:
-                print(f"Seller {seller.index} balance: {seller.getBalance()}")
-            print(f"----Day {day} End----")
-        print(f"----Game Over----")
+                # print(f"Seller {seller.index} balance: {seller.getBalance()}")
+                self.record[-1][-1]["seller"].append({"name":seller.index,"balance":seller.getBalance()})
+        self.playerScore=self.agents[0].getBalance()
+            # print(f"----Day {day} End----")
+        # print(f"----Game Over----")
 
-        return self.gameState
+        return self.state
