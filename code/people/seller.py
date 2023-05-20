@@ -21,7 +21,12 @@ class Seller:
         self.index = index
         self._balance = balance
         # self.benefitRule = benefitRule
-
+    def __hash__(self) -> int:
+        return hash(f"Seller {self.index}")
+    def __eq__(self, __value: object) -> bool:
+        return self.__hash__() == __value.__hash__()
+    def __str__(self) -> str:
+        return f"Seller {self.index} with balence {self._balance}"
     def isLive(self) -> bool:
         return self._balance > 0
 

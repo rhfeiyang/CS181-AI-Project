@@ -16,7 +16,8 @@ class Consumer:
 
     def __str__(self):
         return f"Consumer {self.index} {self.name} {self.preference}"
-
+    def __hash__(self) -> int:
+        return self.index + 66600000000
     def isPrefer(self, seller: int) -> bool:
         """
         seller: the id of seller asking
