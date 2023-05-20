@@ -15,4 +15,5 @@ class Agent(Seller):
         utils.raiseNotDefined()
 
     def getBalance(self) -> float:
-        return self._balance
+        # return self._balance
+        raise Exception("The balance data is stored in the state(seller), not in the agent")

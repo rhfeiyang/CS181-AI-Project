@@ -45,10 +45,10 @@ class QLearningAgent(ReinforcementAgent):
           there are no legal actions, which is the case at the
           terminal state, you should return a value of 0.0.
         """
-        if len(self.getLegalChoices(self.index))==0:
+        if len(state.getLegalChoices(self.index))==0:
             return 0.0
 
-        return max([self.getQValue(state,action) for action in self.getLegalChoices(state)])
+        return max([self.getQValue(state,action) for action in state.getLegalChoices(state)])
 
     def computeActionFromQValues(self, state):
         """
@@ -124,13 +124,13 @@ class SellerQAgent(QLearningAgent):
         self.index = 0  # This is always Pacman
         QLearningAgent.__init__(self, **args)
 
-    def getAction(self, state):
+    def getChoice(self, state):
         """
         Simply calls the getAction method of QLearningAgent and then
         informs parent of action for Pacman.  Do not change or remove this
         method.
         """
-        action = QLearningAgent.getAction(self, state)
+        action = QLearningAgent.getChoice(self, state)
         self.doAction(state, action)
         return action
 
@@ -176,9 +176,10 @@ class ApproximateQAgent(SellerQAgent):
         # Q(s,a) = (1-alpha)*Q(s,a) + alpha*(r + gamma*maxQ(s',a'))
         difference = (reward + self.discount * nextQValue) - self.getQValue(state, action)
         featureVector = self.featExtractor.getFeatures(state, action)
+        # print("Before weights: ", self.weights['bias'])
         for feature in featureVector:
             self.weights[feature] += self.alpha * difference * featureVector[feature]
-        # print("weights: ", self.weights[feature])
+        # print("After weights: ", self.weights['bias'])
 
     def final(self, state):
         "Called at the end of each game."
@@ -191,9 +192,9 @@ class ApproximateQAgent(SellerQAgent):
             pass
         # print("weights: ", self.weights)
         # print("features: ", self.featExtractor.getFeatures(state, 'Stop'))
+
         for feature in self.featExtractor.getFeatures(state, 'Stop'):
-            print(f"{feature:35s}: weight:\t{self.weights[feature]:.8f}, \t \
-                |\tfeature: \t{self.featExtractor.getFeatures(state, 'Stop')[feature]:.8f}")
+            print(f"{feature:15s}: weight:\t{self.weights[feature]:.6f},\t  | feature: \t{self.featExtractor.getFeatures(state, 'Stop')[feature]:.8f}")
         print()
 
 class Extractor:

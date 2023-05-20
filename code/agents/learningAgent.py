@@ -67,7 +67,7 @@ class ValueEstimationAgent(Agent):
         """
         utils.raiseNotDefined()
 
-    def getAction(self, state):
+    def getChoice(self, state):
         """
         state: can call state.getLegalActions()
         Choose an action and return it.
@@ -189,7 +189,7 @@ class ReinforcementAgent(ValueEstimationAgent):
             Called by inherited class when
             an action is taken in a state
         """
-        self.lastState = state
+        self.lastState = state.copy()
         self.lastAction = action
 
     ###################
@@ -214,8 +214,8 @@ class ReinforcementAgent(ValueEstimationAgent):
         """
           Called by Pacman game at the terminal state
         """
-        deltaReward = state.getScore() - self.lastState.getScore()
-        self.observeTransition(self.lastState, self.lastAction, state, deltaReward)
+        # deltaReward = state.getScore() - self.lastState.getScore()
+        # self.observeTransition(self.lastState, self.lastAction, state, deltaReward)
         self.stopEpisode()
 
         # Make sure we have this var

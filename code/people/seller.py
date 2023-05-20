@@ -9,7 +9,7 @@ class SellerChoices:
 
 
 class Seller:
-    def __init__(self, index: int, balance: float, benefitRule={SellerChoices.HIGH: 1.0,
+    def __init__(self, index: int, balance: float=0, benefitRule={SellerChoices.HIGH: 1.0,
                                                                 SellerChoices.MEDIUM: 0.0,
                                                                 SellerChoices.LOW: -1.0,
                                                                 SellerChoices.SUPERLOW: -2.0}
@@ -29,10 +29,11 @@ class Seller:
         self._balance = balance
 
     def getScore(self) -> float:
-        if(self.index == 0):
-            return self._balance
-        else:
-            raise Exception("Only the first seller can get the score")
+        return self._balance
+        # if(self.index == 0):
+        #     return self._balance
+        # else:
+        #     raise Exception("Only the first seller can get the score")
 
     def getIndex(self) -> int:
         return self.index

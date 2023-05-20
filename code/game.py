@@ -17,16 +17,21 @@ class AgentState:
 
 
 class GameState:
-    def __init__(self, agents: List[Seller], sellerNum: int, consumerNum: int, nameList: list, balance: float, dailyCost: float = 0, dailyIncome: float = 0):
+    def __init__(self, agents: List[Seller], sellerNum: int, consumerNum: int, nameList: list, balance: float=None, dailyCost: float = 0, dailyIncome: float = 0):
         '''
         balance: at the start, all the sellers have the same balance(property)
         '''
         self.sellerNum = sellerNum
         self.consumerNum = consumerNum
         self.nameList = nameList
-        self.sellers: List[Seller] = agents
-        for agent in agents:
-            agent.setBalance(balance)
+        if agents is not None:
+            self.sellers: List[Seller] = [Seller(agent.index, agent.getScore()) for agent in agents]
+        else:
+            self.sellers: List[Seller] = [Seller(i) for i in range(sellerNum)]
+
+        if balance is not None:
+            for seller in self.sellers:
+                seller.setBalance(balance)
         self.consumers = [Consumer(i, nameList[i], preference=[0 for j in range(sellerNum)])
                           for i in range(consumerNum)]
         self.curConsumer = -1
@@ -53,8 +58,8 @@ class GameState:
     def isLose(self):
         return not self.sellers[0].isLive()
 
-    def getScore(self):
-        return self.sellers[0].getScore()
+    def getScore(self, agentIndex: int=0):
+        return self.sellers[agentIndex].getScore()
 
     def getNumAgents(self):
         return self.sellerNum
@@ -70,9 +75,11 @@ class GameState:
         Copy the current GameState
         return: the copy of the current GameState
         '''
-        newGameState = GameState(self.sellers.copy(),self.sellerNum, self.consumerNum, self.nameList, None, self.dailyCost, self.dailyIncome)
+        newGameState = GameState(deepcopy(self.sellers),self.sellerNum, self.consumerNum, self.nameList, None, self.dailyCost, self.dailyIncome)
         newGameState.consumers = [Consumer(i, self.nameList[i], self.consumers[i].preference.copy()) for i in range(self.consumerNum)]
         newGameState.curConsumer = self.curConsumer
+        # for seller in newGameState.sellers:
+        #     seller.setBalance(self.getSellersFromIndex(seller.getIndex()).getScore())
         return newGameState
 
     def getNextState(self, agentIndex: int, choice: int):
@@ -176,10 +183,13 @@ class Game:
         self.state = GameState(self.agents, self.sellerNum, self.consumerNum, self.nameList,
                                self.balance, self.dailyCost, self.dailyIncome)
         day = 0
+        # if ("registerInitialState" in dir(self.agents[0])):
+        #     self.agents[0].registerInitialState(self.state)
         while not self.gameOver and day < self.maxDay:
             day += 1
             # print(f"----Day {day} start----")
             self.record.append([])
+            print(self.agents[0].weights)
             # Fetch the next game state
             while True:
                 consumer = self.state.getNextConsumer()
@@ -206,10 +216,13 @@ class Game:
                     self.record[-1][-1]["sellerChoice"].append(sellerChoice)
 
                 self.state.updateSeller(eatIdx, sellerChoice)
+                if sellerIdx==0:
+                    if 'observationFunction' in dir(self.agents[0]):
+                        self.agents[0].observationFunction(self.state)
                 # print(f"consumer {consumer.name} preference:{consumer.preference}")
                 self.record[-1][-1]["consumerPreference"] = consumer.preference.copy()
                 # print(f"seller {sellerIdx} balance: {self.agents[sellerIdx].getBalance()}")
-                self.record[-1][-1]["sellerBalance"] = self.agents[eatIdx].getBalance()
+                self.record[-1][-1]["sellerBalance"] = self.state.getScore(eatIdx)
                 self.gameOver = self.state.isWin() or self.state.isLose()
                 # print(f"------------------")
                 if self.state.isLastConsumer() or self.gameOver:
@@ -226,11 +239,13 @@ class Game:
             self.record[-1][-1]["seller"] = []
             for seller in self.agents:
                 # print(f"Seller {seller.index} balance: {seller.getBalance()}")
-                self.record[-1][-1]["seller"].append({"name": seller.index, "balance": seller.getBalance()})
-        self.playerScore = self.agents[0].getBalance()
-        scores = [agent.getBalance() for agent in self.agents]
+                self.record[-1][-1]["seller"].append({"name": seller.index, "balance": self.state.getScore(seller.index)})
+        self.playerScore = self.state.getScore()
+        scores = [agent.getScore() for agent in self.state.sellers]
         print(f"Final scores: {scores}, end day: {day}")
         self.isWin = self.state.isWin() if self.gameOver else argmax(scores) == 0
+        # if ("registerInitialState" in dir(self.agents[0])):
+        #     self.agents[0].final(self.state)
         # print(f"----Day {day} End----")
         # print(f"----Game Over----")
 
