@@ -23,11 +23,12 @@ class ExpectimaxAgent(Agent):
         Your agent for the mini-contest
     """
 
-    def __init__(self, evalFn='scoreEvaluationFunction', depth='3'):
+    def __init__(self, belief: SellerAgent, evalFn='scoreEvaluationFunction', depth='2'):
         super().__init__()
         self.index = 0  # Pacman is always agent index 0
         self.evaluationFunction = utils.lookup(evalFn, globals())
         self.depth = int(depth)
+        self.belief = belief
 
     def getChoice(self, gameState):
         def max_value(gameState, depth, agentIndex):
@@ -39,7 +40,7 @@ class ExpectimaxAgent(Agent):
 
         def exp_value(gameState, depth, agentIndex):
             v = 0
-            sellerB = RandomSeller(agentIndex)
+            sellerB = self.belief(agentIndex)
             choiceDistribution = sellerB.getDistribution(gameState)
 
             for choice, weight in choiceDistribution.items():
@@ -65,4 +66,3 @@ class ExpectimaxAgent(Agent):
                 v = minMaxVal
                 bestChoice = choice
         return bestChoice if bestChoice else SellerChoices.NONE
-
