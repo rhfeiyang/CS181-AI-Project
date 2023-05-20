@@ -6,7 +6,7 @@ from agents import Agent
 from copy import deepcopy
 from numpy import argmax
 from typing import List
-
+import sys
 
 class Configuration:
     pass
@@ -17,7 +17,7 @@ class AgentState:
 
 
 class GameState:
-    def __init__(self, agents: List[Seller], sellerNum: int, consumerNum: int, nameList: list, balance: float=None, dailyCost: float = 0, dailyIncome: float = 0):
+    def __init__(self, agents: List[Seller], sellerNum: int, consumerNum: int, nameList: list, maxDay:int, balance: float=None, dailyCost: float = 0, dailyIncome: float = 0):
         '''
         balance: at the start, all the sellers have the same balance(property)
         '''
@@ -38,6 +38,7 @@ class GameState:
         self.dailyCost = dailyCost
         self.dailyIncome = dailyIncome
         self.force = False
+        self.restTime = maxDay
 
     def getCurrentConsumer(self):
         return self.consumers[self.curConsumer]
@@ -81,9 +82,10 @@ class GameState:
         Copy the current GameState
         return: the copy of the current GameState
         '''
-        newGameState = GameState(deepcopy(self.sellers),self.sellerNum, self.consumerNum, self.nameList, None, self.dailyCost, self.dailyIncome)
+        newGameState = GameState(deepcopy(self.sellers),self.sellerNum, self.consumerNum, self.nameList, self.restTime, None, self.dailyCost, self.dailyIncome)
         newGameState.consumers = [Consumer(i, self.nameList[i], self.consumers[i].preference.copy()) for i in range(self.consumerNum)]
         newGameState.curConsumer = self.curConsumer
+        # newGameState.restTime = self.restTime
         # for seller in newGameState.sellers:
         #     seller.setBalance(self.getSellersFromIndex(seller.getIndex()).getScore())
         return newGameState
@@ -147,14 +149,32 @@ class Game:
         self.dailyCost = dailyCost
         self.dailyIncome = dailyIncome
         self.maxDay = maxDay
-
+        self.muteAgents = False
         self.gameOver = False
         self.record = []
+        import io
+        self.agentOutput = [io.StringIO() for agent in agents]
         # self.record={"day":[],"score":[],"balance":[],"consumerVisit":[],"agentChoice":[],"consumerPreference":[]}
         # self.agentTimeout = False
         # import io
         # self.agentOutput = [io.StringIO() for agent in agents]
+    def mute(self, agentIndex):
+        if not self.muteAgents:
+            return
+        global OLD_STDOUT, OLD_STDERR
+        import io
+        OLD_STDOUT = sys.stdout
+        OLD_STDERR = sys.stderr
+        sys.stdout = self.agentOutput[agentIndex]
+        sys.stderr = self.agentOutput[agentIndex]
 
+    def unmute(self):
+        if not self.muteAgents:
+            return
+        global OLD_STDOUT, OLD_STDERR
+        # Revert stdout/stderr to originals
+        sys.stdout = OLD_STDOUT
+        sys.stderr = OLD_STDERR
     def showRecord(self):
         print("----Game Start----")
         for day in range(len(self.record)):
@@ -186,16 +206,18 @@ class Game:
         '''
         Main control loop for game play.
         '''
-        self.state = GameState(self.agents, self.sellerNum, self.consumerNum, self.nameList,
+        self.state = GameState(self.agents, self.sellerNum, self.consumerNum, self.nameList, self.maxDay,
                                self.balance, self.dailyCost, self.dailyIncome)
         day = 0
-        # if ("registerInitialState" in dir(self.agents[0])):
-        #     self.agents[0].registerInitialState(self.state)
+        if ("registerInitialState" in dir(self.agents[0])):
+            self.agents[0].registerInitialState(self.state)
+
         while not self.gameOver and day < self.maxDay:
             day += 1
-            print(f"----Day {day} start----")
+            self.state.restTime -= 1
+            # print(f"----Day {day} start----")
             self.record.append([])
-            print(self.agents[0].weights)
+            # print(self.agents[0].weights)
             # Fetch the next game state
             while True:
                 consumer = self.state.getNextConsumer()
@@ -248,10 +270,12 @@ class Game:
                 self.record[-1][-1]["seller"].append({"name": seller.index, "balance": self.state.getScore(seller.index)})
         self.playerScore = self.state.getScore()
         scores = [agent.getScore() for agent in self.state.sellers]
-        print(f"Final scores: {scores}, end day: {day}")
+        # print(f"Final scores: {scores}, end day: {day}")
         self.isWin = self.state.isWin() if self.gameOver else argmax(scores) == 0
-        # if ("registerInitialState" in dir(self.agents[0])):
-        #     self.agents[0].final(self.state)
+        if ("registerInitialState" in dir(self.agents[0])):
+            self.mute(0)
+            self.agents[0].final(self.state)
+            self.unmute()
         # print(f"----Day {day} End----")
         # print(f"----Game Over----")
 

@@ -1,7 +1,7 @@
 import utils
 from ..learningAgent import ReinforcementAgent
 import random
-
+import pickle
 class QLearningAgent(ReinforcementAgent):
     """
       Q-Learning Agent
@@ -106,7 +106,7 @@ class QLearningAgent(ReinforcementAgent):
 class SellerQAgent(QLearningAgent):
     "Exactly the same as QLearningAgent, but with different default parameters"
 
-    def __init__(self, epsilon=0.05, gamma=0.8, alpha=0.2, numTraining=0, **args):
+    def __init__(self, epsilon=0.05, gamma=0.91, alpha=0.2, numTraining=0, **args):
         """
         These default parameters can be changed from the pacman.py command line.
         For example, to change the exploration rate, try:
@@ -152,10 +152,14 @@ class ApproximateQAgent(SellerQAgent):
         else:
             self.weights=weights
 
+    def loadWeights(self, weightFile):
+        with open(weightFile, 'rb') as f:
+            self.weights = pickle.load(f)
+
     def getWeights(self):
         return self.weights
 
-    def getQValue(self, state, action):
+    def getQValue(self, state, action:int):
         """
           Should return Q(state,action) = w * featureVector
           where * is the dotProduct operator
@@ -165,7 +169,7 @@ class ApproximateQAgent(SellerQAgent):
         QValue = 0
         for feature in featureVector:
             QValue += self.weights[feature] * featureVector[feature]
-        # print("QValue: ", QValue)
+        # print(f"restTime: {state.restTime}")
         return QValue
 
     def update(self, state, action, nextState, reward):
@@ -175,6 +179,7 @@ class ApproximateQAgent(SellerQAgent):
         nextQValue = self.computeValueFromQValues(nextState)
         # Q(s,a) = (1-alpha)*Q(s,a) + alpha*(r + gamma*maxQ(s',a'))
         difference = (reward + self.discount * nextQValue) - self.getQValue(state, action)
+        # print(f"difference: {difference}")
         featureVector = self.featExtractor.getFeatures(state, action)
         # print("Before weights: ", self.weights['bias'])
         for feature in featureVector:
@@ -187,15 +192,16 @@ class ApproximateQAgent(SellerQAgent):
         SellerQAgent.final(self, state)
 
         # did we finish training?
-        if self.episodesSoFar == self.numTraining:
+        # if self.episodesSoFar == self.numTraining:
             # you might want to print your weights here for debugging
-            pass
+            # pass
         # print("weights: ", self.weights)
         # print("features: ", self.featExtractor.getFeatures(state, 'Stop'))
-
-        for feature in self.featExtractor.getFeatures(state, 'Stop'):
-            print(f"{feature:15s}: weight:\t{self.weights[feature]:.6f},\t  | feature: \t{self.featExtractor.getFeatures(state, 'Stop')[feature]:.8f}")
-        print()
+        if self.episodesSoFar %100==0:
+            # for feature in self.featExtractor.getFeatures(state, 10):
+            #     print(f"{feature:15s}: weight:\t{self.weights[feature]:.6f},\t  | feature: \t{self.featExtractor.getFeatures(state, 10)[feature]:.8f}")
+            print(self.weights)
+            print()
 
 class Extractor:
     def getFeatures(self, state, action):
@@ -206,15 +212,23 @@ class Extractor:
         """
         # raise NotImplemented
         features = utils.Counter()
+        features[f"action_{action}"]=1.
+        features[f"curConsumer_{state.curConsumer}"]=1.
+        # features[f"action"]=action
         features["bias"] = 1.0
-        features["balance"] = state.getScore()/50
+        # features["balance"] = state.getScore()/50
         features["dailyCost"]=state.dailyCost/20
-        features["dailyIncome"]=state.dailyIncome/10
+        features["restTime"]=state.restTime/2000
+
+        # features["dailyIncome"]=state.dailyIncome/10
         for i in range(state.consumerNum):
             for j in range(state.sellerNum):
                 features[f"consumer{i}_{j}"]=state.consumers[i].preference[j]/10
+        for i in range(state.sellerNum):
+            features[f"rivalScore_{i}"]=state.getScore(i)/10
+
         features["liveAgents"]=state.getLiveAgents()/state.sellerNum
-        features.divideAll(10.0)
+        features.divideAll(15.0)
         return features
 
 

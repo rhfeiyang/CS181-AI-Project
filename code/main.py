@@ -2,7 +2,7 @@ from game import *
 from agents import *
 import random
 import sys
-
+import pickle
 
 class ClassicGameRules:
     """
@@ -162,9 +162,12 @@ def readCommand(argv):
     return args
 
 
-def runGames(player: Agent, rivals: List[Agent], numGames: int, record: bool, numTraining=0):
+def runGames(player: Agent, rivals: List[Agent], numGames: int, record: bool, numTraining=0,weightFile=None):
 
     games = []
+
+    if weightFile:
+        player.loadWeights(weightFile)
 
     for i in range(numGames):
         beQuiet = i < numTraining
@@ -178,6 +181,7 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, record: bool, nu
             # gameDisplay = display
             # rules.quiet = False
             pass
+
         # game = rules.newGame(layout, pacman, ghosts,
         #                      gameDisplay, beQuiet, catchExceptions)
 
@@ -186,9 +190,11 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, record: bool, nu
         game = Game([player]+rivals,
                     consumerNum=len(consumerNameList), nameList=consumerNameList,
                     balance=10*(len(consumerNameList)), dailyCost=1, dailyIncome=0, maxDay=100)
+
         game.run()
         if not beQuiet:
             games.append(game)
+
 
         if record:
             # import time
@@ -211,6 +217,10 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, record: bool, nu
         print('Record:       ', ', '.join(
             [['Loss', 'Win'][int(w)] for w in wins]))
 
+    with open('RLweights_tmp.pickle', 'wb') as file:
+        pickle.dump(player.weights, file)
+
+
     return games
 
 
@@ -227,8 +237,10 @@ if __name__ == '__main__':
     """
     # args = readCommand(sys.argv[1:])  # Get game components based on input
     # runGames(**args)
-    player = AlphaBetaAgent()
-    rivals = [GreedySellerHigh(index=1)]
+    player = ApproximateQAgent()
+    numTraining=5000
+    player.numTraining=numTraining
+    rivals = [GreedySellerSuperLow(index=1)]
 
     # game = Game([ApproximateQAgent(), RandomSeller(index=1)],
     #             consumerNum=2, nameList=['Tom', 'Jerry'],
@@ -236,7 +248,7 @@ if __name__ == '__main__':
 
     random.seed('cs181')
     # runGames(player, rivals, 5, record=True, numTraining=0)
-    runGames(player, rivals, 50, record=False)
+    runGames(player, rivals, numTraining+50, record=False, numTraining=numTraining,weightFile=None)
 
     # print("Score:",finalGameState.getScore())
 

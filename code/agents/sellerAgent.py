@@ -48,7 +48,6 @@ class GreedySellerHigh(SellerAgent):
         dist.normalize()
         return dist
 
-
 class GreedySellerLow(SellerAgent):
     '''
     A seller that prefers to give a high price if consumer prefers the seller,
