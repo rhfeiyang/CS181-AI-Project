@@ -43,8 +43,17 @@ class Consumer:
         """
         return random.randint(0, n - 1)
 
+    def eat(self, index: int, sellerChoice: int):
+        """
+        exactly eat the food
+        index: the index of the seller
+        choice: the choice of the price of the food that seller offers
+        """
+        self.preferenceUpdate(index, sellerChoice)
 
-    def eat(self, index: int, sellerChoice: SellerChoices):
+
+
+    def decide(self, index: int, sellerChoice: int):
         """
         eat the food
         index: the index of the seller
@@ -55,7 +64,7 @@ class Consumer:
         # if sellerChoice == SellerChoices.NONE:
         #     print(f"{self.name} is eating in restaurant {index} with superlow price")
         #     return None
-
+        self.preferenceUpdate(index, sellerChoice)
         eatIdx = None
         if self.hasPreference():  # has preference
             if self.isPrefer(index):

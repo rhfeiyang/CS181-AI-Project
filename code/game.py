@@ -79,7 +79,7 @@ class GameState:
         # newGameState.dailyIncome = self.dailyIncome
         return newGameState
 
-    def getNextState(self, agentIndex: int, choice: SellerChoices):
+    def getNextState(self, agentIndex: int, choice: int):
         '''
         Returns the next GameState if the agent choose choice.
         agentIndex: the index of the agent who is going to choose
@@ -88,8 +88,14 @@ class GameState:
         '''
         newGameState = self.copy()
         consumer = newGameState.getCurrentConsumer()
-        eatIdx = consumer.eat(agentIndex, choice)
-        newGameState.updateOnce(eatIdx, choice)
+        eatIdx = consumer.decide(agentIndex, choice)
+
+        if eatIdx != agentIndex:
+            sellerAgent = self.sellers[eatIdx]
+            choice = sellerAgent.getChoice(self)
+            newGameState.updateConsumer(eatIdx, choice)
+
+        newGameState.updateSeller(eatIdx, choice)
         if self.isLastConsumer():
             newGameState.updateDaily()
         return newGameState
@@ -99,15 +105,19 @@ class GameState:
             seller.loseMoney(self.dailyCost)
             seller.getMoney(self.dailyIncome)
 
-    def updateOnce(self, eatIndex: int, choice: SellerChoices):
+    def updateConsumer(self,sellerIdx: int, choice: int):
+        self.getCurrentConsumer().preferenceUpdate(sellerIdx, choice)
+
+    def updateSeller(self, eatIndex: int, choice: int):
         '''
         Update the state of the game.
         eatIndex: the index of the seller who is going to be eaten
         choice: the choice of the seller
         return: None
         '''
-        self.getCurrentConsumer().preferenceUpdate(eatIndex, choice)
+
         self.sellers[eatIndex].getPaid(choice)
+
 
 
 class Game:
@@ -180,7 +190,7 @@ class Game:
                 # print(f"Seller {sellerIdx} choose price {sellerChoice}")
                 self.record[-1][-1]["sellerChoice"] = [sellerChoice]
                 # Consumer give his decision
-                eatIdx = consumer.eat(sellerIdx, sellerChoice)
+                eatIdx = consumer.decide(sellerIdx, sellerChoice)
                 # print(f"Consumer {consumer.name} decide to eat at seller {eatIdx}")
                 self.record[-1][-1]["consumerChoice"] = eatIdx
                 if eatIdx != sellerIdx:
@@ -189,7 +199,7 @@ class Game:
                     # print(f"Seller {eatIdx} choose price {sellerChoice}")
                     self.record[-1][-1]["sellerChoice"].append(sellerChoice)
 
-                self.state.updateOnce(eatIdx, sellerChoice)
+                self.state.updateSeller(eatIdx, sellerChoice)
                 # print(f"consumer {consumer.name} preference:{consumer.preference}")
                 self.record[-1][-1]["consumerPreference"] = consumer.preference
                 # print(f"seller {sellerIdx} balance: {self.agents[sellerIdx].getBalance()}")
