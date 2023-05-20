@@ -73,7 +73,7 @@ class GameState:
         newGameState = GameState(self.sellers.copy(),self.sellerNum, self.consumerNum, self.nameList, None, self.dailyCost, self.dailyIncome)
         newGameState.consumers = [Consumer(i, self.nameList[i], self.consumers[i].preference.copy()) for i in range(self.consumerNum)]
         newGameState.curConsumer = self.curConsumer
-
+        return newGameState
 
     def getNextState(self, agentIndex: int, choice: int):
         '''
