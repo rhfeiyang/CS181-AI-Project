@@ -37,6 +37,7 @@ def parseargs():
     print("Train num:",args.numTraining)
     print("Game num:",args.numGames)
     print("Agent:", args.agent)
+    print("ConsumerName:", len(args.consumerName))
     print("Rival:", args.rival)
     print("save file name:", args.saveFileName)
     print("init balance:", args.initBalance)

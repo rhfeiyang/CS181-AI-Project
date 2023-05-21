@@ -201,12 +201,12 @@ class Game:
                 print(f"Consumer {consumerRecord['comsumerName']} visit seller {consumerRecord['consumerVisit']}")
                 print(f"Seller {consumerRecord['consumerVisit']} choose price {consumerRecord['sellerChoice'][0]}")
                 if(consumerRecord['consumerChoice'] != consumerRecord['consumerVisit']):
-                    print("Comsumer is not satisfied with the price")
+                    print("Comsumer does not accept the price")
                     print(
                         f"Consumer {consumerRecord['comsumerName']} decide to eat at seller {consumerRecord['consumerChoice']}")
                     print(f"Seller {consumerRecord['consumerChoice']} choose price {consumerRecord['sellerChoice'][1]}")
                 else:
-                    print("Comsumer is satisfied with the price")
+                    print("Comsumer accept the price")
                 print(f"Consumer {consumerRecord['comsumerName']} preference {consumerRecord['consumerPreference']}")
                 print(f"Seller {consumerRecord['consumerChoice']} balance {consumerRecord['sellerBalance']}")
                 print(f"------------------")
