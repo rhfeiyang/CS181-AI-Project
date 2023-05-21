@@ -165,9 +165,15 @@ def readCommand(argv):
     return args
 
 
-def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList:List[str], record: bool, numTraining=0):
+def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList:List[str], record: bool, numTraining=0,weightFile=None):
 
     games = []
+
+    if weightFile:
+        try:
+            player.loadWeights(weightFile)
+        except:
+            print("No weight file found")
 
     for i in range(numGames):
         beQuiet = i < numTraining
@@ -214,6 +220,14 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
         print('Record:       ', ', '.join(
             [['Loss', 'Win'][int(w)] for w in wins]))
 
+    if "QValues" in dir(player):
+        with open('QValues_tmp.pickle', 'wb') as file:
+            pickle.dump(player.QValues, file)
+    if "weights" in dir(player):
+        with open('RLweights_tmp.pickle', 'wb') as file:
+            pickle.dump(player.weights, file)
+
+
     return games
 
 def plot(games:Game = None):
@@ -233,7 +247,7 @@ def plot(games:Game = None):
         elif isinstance(agent, GreedySellerSuperLow):
             return 'GreedySellerSuperLow'
         return 'Unknown'
-    
+
     if games != None:
         with open('game.pkl', 'wb') as f:
             pickle.dump(games, f)
@@ -243,7 +257,7 @@ def plot(games:Game = None):
 
     sellerNum = games[0].sellerNum
     x = np.arange(1, games[0].maxDay+1)
-    
+
     sellerBalance = np.zeros(shape = (sellerNum, games[0].maxDay))
     weight = np.zeros(shape = (sellerNum, games[0].maxDay))
     for game in games:
@@ -253,14 +267,14 @@ def plot(games:Game = None):
                 sellerBalance[i][j] += record[j][-1]['seller'][i]['balance']
                 weight[i][j] += 1
     sellerBalance /= weight
-    
+
     plt.figure()
     for i in range(sellerNum):
-        plt.plot(x, sellerBalance[i], 
-                 label=f'{getSellerAgentName(games[0].agents[i])}', 
+        plt.plot(x, sellerBalance[i],
+                 label=f'{getSellerAgentName(games[0].agents[i])}',
                  linestyle='-' if i==0 else '--')
-    
-    
+
+
     plt.title(f'Average Balance of Different Seller Agents in {len(games)} Games')
     plt.xlabel('Day')
     plt.ylabel('Balance')
@@ -268,8 +282,8 @@ def plot(games:Game = None):
     plt.xlim(1, game.maxDay)
     # plt.show()
     plt.savefig('output.png')
-    
-    
+
+
 
 if __name__ == '__main__':
     """
@@ -285,13 +299,10 @@ if __name__ == '__main__':
     # args = readCommand(sys.argv[1:])  # Get game components based on input
     # runGames(**args)
     consumerNameList = ['Tom', 'Jerry']
-    consumerNum = len(consumerNameList)
-    sellerNum = 2
-
-
-
-    player = ExpectimaxAgent(GreedySellerLow)
-    rivals = [GreedySellerLow(index=1)]
+    player = MCQAgent()
+    numTraining=5000
+    player.numTraining=numTraining
+    rivals = [GreedySellerHigh(index=1)]
 
     # game = Game([ApproximateQAgent(), RandomSeller(index=1)],
     #             consumerNum=2, nameList=['Tom', 'Jerry'],
@@ -299,12 +310,10 @@ if __name__ == '__main__':
 
     random.seed('cs181')
     # runGames(player, rivals, 5, record=True, numTraining=0)
-    games = runGames(player, rivals, 50, consumerNameList, record=False)
-    
-    plot(games)
-
+    games=runGames(player, rivals, numTraining+50, consumerNameList, record=False, numTraining=numTraining,weightFile="QValues_tmp.pickle")
+    # plot(games)
     # print("Score:",finalGameState.getScore())
 
     # import cProfile
     # cProfile.run("runGames( **args )")
-    pass
+

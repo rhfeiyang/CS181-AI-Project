@@ -226,7 +226,7 @@ class ReinforcementAgent(ValueEstimationAgent):
             self.lastWindowAccumRewards = 0.0
         self.lastWindowAccumRewards += state.getScore()
 
-        NUM_EPS_UPDATE = 100
+        NUM_EPS_UPDATE = 200
         if self.episodesSoFar % NUM_EPS_UPDATE == 0:
             print('Reinforcement Learning Status:')
             windowAvg = self.lastWindowAccumRewards / float(NUM_EPS_UPDATE)

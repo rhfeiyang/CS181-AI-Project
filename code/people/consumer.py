@@ -13,7 +13,7 @@ class Consumer:
         self.index: int = index
         self.name: str = name
         self.preference: List[int] = preference
-        self.belief: float = SellerChoices.MEDIUM
+        # self.belief: float = SellerChoices.MEDIUM
 
     def __str__(self):
         return f"Consumer {self.index} {self.name} {self.preference}"

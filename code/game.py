@@ -32,8 +32,12 @@ class GameState:
         if balance is not None:
             for seller in self.sellers:
                 seller.setBalance(balance)
-        self.consumers = [Consumer(i, nameList[i], preference=[0 for j in range(sellerNum)])
-                          for i in range(consumerNum)]
+        if nameList is None:
+            self.consumers = [Consumer(i, None, preference=[0 for j in range(sellerNum)])
+                              for i in range(consumerNum)]
+        else:
+            self.consumers = [Consumer(i, nameList[i], preference=[0 for j in range(sellerNum)])
+                              for i in range(consumerNum)]
         self.curConsumer = -1
         self.dailyCost = dailyCost
         self.dailyIncome = dailyIncome
@@ -76,6 +80,22 @@ class GameState:
 
     def getLegalChoices(self, agentIndex: int):
         return [SellerChoices.HIGH, SellerChoices.MEDIUM, SellerChoices.LOW, SellerChoices.SUPERLOW]
+    def featureExtractor(self):
+        features={}
+
+        for i in range(self.sellerNum):
+            features['seller'+str(i)+'_score']=self.sellers[i].getScore()
+        features['consumerPreference']=tuple([tuple([round(p) for p in i.preference]) for i in self.consumers])
+
+
+        features['curConsumer']=self.curConsumer
+        features['restTime']=self.restTime
+        # features['consumerNum']=self.consumerNum
+        # features['sellerNum']=self.sellerNum
+        # features['dailyCost']=self.dailyCost
+        # features['dailyIncome']=self.dailyIncome
+
+        return tuple(features.values())
 
     def copy(self):
         '''
@@ -272,7 +292,7 @@ class Game:
         scores = [agent.getScore() for agent in self.state.sellers]
         # print(f"Final scores: {scores}, end day: {day}")
         self.isWin = self.state.isWin() if self.gameOver else argmax(scores) == 0
-        if ("registerInitialState" in dir(self.agents[0])):
+        if ("final" in dir(self.agents[0])):
             self.mute(0)
             self.agents[0].final(self.state)
             self.unmute()

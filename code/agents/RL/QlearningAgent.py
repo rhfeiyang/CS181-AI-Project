@@ -2,6 +2,8 @@ import utils
 from ..learningAgent import ReinforcementAgent
 import random
 import pickle
+from typing import List
+
 class QLearningAgent(ReinforcementAgent):
     """
       Q-Learning Agent
@@ -203,6 +205,8 @@ class ApproximateQAgent(SellerQAgent):
             print(self.weights)
             print()
 
+
+
 class Extractor:
     def getFeatures(self, state, action):
         """
@@ -232,12 +236,149 @@ class Extractor:
         return features
 
 
+class MCQAgent(ReinforcementAgent):
 
+    def __init__(self, epsilon=0.1, gamma=1, alpha=0.2, numTraining=0, **args):
+        "You can initialize Q-values here..."
+        args['epsilon'] = epsilon
+        args['gamma'] = gamma
+        args['alpha'] = alpha
+        args['numTraining'] = numTraining
+        ReinforcementAgent.__init__(self, **args)
+        # Each term: {(state): [QValue, count]}
+        self.QValues = utils.CounterMC()  # A Counter is a dict with default 0
 
+    def loadWeights(self, weightFile):
+        with open(weightFile, 'rb') as f:
+            self.QValues = pickle.load(f)
+    def getQValue(self, state, action):
+        """
+          Returns Q(state,action)
+          Should return 0.0 if we have never seen a state
+          or the Q node value otherwise
+        """
+        # return 0.0 if we have never seen a state
+        # return self.QValues[(state, action)] if (state, action) in self.QValues else [0.0,0]
+        return self.QValues[(state.featureExtractor(), action)]
+    def computeValueFromQValues(self, state):
+        """
+          Returns max_action Q(state,action)
+          where the max is over legal actions.  Note that if
+          there are no legal actions, which is the case at the
+          terminal state, you should return a value of 0.0.
+        """
+        if len(state.getLegalChoices(self.index))==0:
+            return 0.0
 
+        return max([self.getQValue(state,action)[0] for action in state.getLegalChoices(state)])
 
+    def computeActionFromQValues(self, state):
+        """
+          Compute the best action to take in a state.  Note that if there
+          are no legal actions, which is the case at the terminal state,
+          you should return None.
+        """
+        if len(state.getLegalChoices(self.index))==0:
+            return None
+        q_values = utils.Counter()
 
+        for action in state.getLegalChoices(state):
+            q_values[action] = self.getQValue(state, action)[0]
 
+        return q_values.argMax()
+
+    def getChoice(self, state):
+        """
+          Compute the action to take in the current state.  With
+          probability self.epsilon, we should take a random action and
+          take the best policy action otherwise.  Note that if there are
+          no legal actions, which is the case at the terminal state, you
+          should choose None as the action.
+
+          HINT: You might want to use utils.flipCoin(prob)
+          HINT: To pick randomly from a list, use random.choice(list)
+        """
+        # Pick Action
+        legalActions = state.getLegalChoices(self.index)
+        action = None
+
+        "*** YOUR CODE HERE ***"
+        if utils.flipCoin(self.epsilon):
+            action=random.choice(legalActions)
+            self.doAction(state, action)
+            return action
+        else:
+            action=self.getPolicy(state)
+            self.doAction(state, action)
+            return self.getPolicy(state)
+    def doAction(self, state, action):
+        """
+            Called by inherited class when
+            an action is taken in a state
+        """
+        self.lastState = state.copy()
+        self.lastAction = action
+
+    def updateEpisode(self,state):
+        """
+          ep: epision for each game, [state, action, nextState, reward]
+        """
+        finalScore=state.getScore() + state.getScore()-state.getScore(1)
+        self.episodeRewards += finalScore
+
+        for state, action, reward in self.epData:
+            tmpReward=finalScore-reward
+            value,times=self.QValues[(state,action)]
+            times+=1
+            # assert isinstance(state,tuple)
+            self.QValues[(state,action)]=[value*((times-1)/times)+tmpReward/times, times]
+
+            # self.QValues[(state,action)][0]= \
+            #     (1-self.alpha)*self.getQValue(state,action)+self.alpha*(reward+self.discount*self.getValue(nextState))
+
+    def getPolicy(self, state):
+        return self.computeActionFromQValues(state)
+
+    def getValue(self, state):
+        return self.computeValueFromQValues(state)
+
+    def startEpisode(self):
+        """
+          Called by environment when new episode is starting
+        """
+        self.lastState = None
+        self.lastAction = None
+        self.episodeRewards = 0.0
+        self.epData = []
+
+    def observationFunction(self, state):
+        """
+            This is where we ended up after our last action.
+            The simulation should somehow ensure this is called
+        """
+        if not self.lastState is None:
+            reward = self.lastState.getScore()
+            reward += self.lastState.getScore()-self.lastState.getScore(1)
+            self.epData.append([self.lastState.featureExtractor(), self.lastAction, reward])
+            # self.observeTransition(self.lastState, self.lastAction, state, reward)
+
+    def final(self, state):
+        self.updateEpisode(state)
+        ReinforcementAgent.final(self, state)
+    def observeTransition(self):
+        """
+            Called by environment to inform agent that a transition has
+            been observed. This will result in a call to self.update
+            on the same arguments
+
+            NOTE: Do *not* override or call this function
+        """
+        raise Exception("observeTransition not available")
+    def update(self, state, action, nextState, reward):
+        """
+            Called by environment when state changes
+        """
+        raise Exception("update not available, refer to updateEpisode")
 
 
 
