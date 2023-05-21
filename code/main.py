@@ -39,6 +39,14 @@ def parseargs():
     print("Agent:", args.agent)
     print("Rival:", args.rival)
     print("save file name:", args.saveFileName)
+    print("init balance:", args.initBalance)
+    print("daily cost:", args.dailyCost)
+    print("daily income:", args.dailyIncome)
+    print("max day:", args.maxDay)
+    print("high price:", args.highPrice)
+    print("medium price:", args.mediumPrice)
+    print("low price:", args.lowPrice)
+    print("super low price:", args.superLowPrice)
     return args
 
 def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList: List[str], record: bool, numTraining=0, weightFile=None ,args=None):
@@ -67,6 +75,7 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
 
         # consumerNameList = ['Tom', 'Jerry', 'a', 'b', 'c', 'd', 'e']
         consumerNum = len(consumerNameList)
+
         game = Game([player]+rivals,
                     consumerNum=consumerNum, nameList=consumerNameList,
                     balance=args.initBalance, dailyCost=args.dailyCost,
