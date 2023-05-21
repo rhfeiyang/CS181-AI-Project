@@ -18,6 +18,10 @@ def parseargs():
     parser.add_argument('--rival', type=str, default=None,nargs='+', help='GreedySellerHigh, GreedySellerLow, GreedySellerSuperLow, RandomSeller')
     parser.add_argument('--consumerName',type=str, default=['Tom', 'Jerry'],nargs='+')
     parser.add_argument('--saveFileName',type=str,default=None,required=False)
+    parser.add_argument('--initBalance', type=int, default=20)
+    parser.add_argument('--dailyCost', type=int, default=1)
+    parser.add_argument('--dailyIncome', type=int, default=0)
+    parser.add_argument('--maxDay', type=int, default=100)
     # parser.add_argument('--consumerNum',type=int,default=None)
     args = parser.parse_args()
     print("Train num:",args.numTraining)
@@ -55,7 +59,8 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
         consumerNum = len(consumerNameList)
         game = Game([player]+rivals,
                     consumerNum=consumerNum, nameList=consumerNameList,
-                    balance=10*consumerNum, dailyCost=1, dailyIncome=0, maxDay=100)
+                    balance=args.initBalance, dailyCost=args.dailyCost,
+                    dailyIncome=args.dailyIncome, maxDay=args.maxDay)
         game.run()
         if not beQuiet:
             games.append(game)
@@ -86,7 +91,7 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
         if args.saveFileName is not None:
             saveFileName=args.saveFileName
     else:
-        saveFileName=f"{args.agent}_{args.rival}_{numTraining}"
+        saveFileName=f"{args.agent}_{args.rival}_{numTraining}.pickle"
 
     if "QValues" in dir(player):
         with open(saveFileName, 'wb') as file:
