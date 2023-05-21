@@ -1,3 +1,4 @@
+#!/bin/bash
 python ./main.py 0 > ./results/0.stdout 2> ./results/0.stderr &
 python ./main.py 1 > ./results/1.stdout 2> ./results/1.stderr &
 python ./main.py 2 > ./results/2.stdout 2> ./results/2.stderr &
