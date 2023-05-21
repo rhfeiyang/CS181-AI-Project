@@ -238,7 +238,7 @@ class Extractor:
 
 class MCQAgent(ReinforcementAgent):
 
-    def __init__(self, epsilon=0.1, gamma=1, alpha=0.2, numTraining=0, **args):
+    def __init__(self, epsilon=0.1, gamma=1.0, alpha=0.2, numTraining=0, **args):
         "You can initialize Q-values here..."
         args['epsilon'] = epsilon
         args['gamma'] = gamma
@@ -258,8 +258,9 @@ class MCQAgent(ReinforcementAgent):
           or the Q node value otherwise
         """
         # return 0.0 if we have never seen a state
-        # return self.QValues[(state, action)] if (state, action) in self.QValues else [0.0,0]
-        return self.QValues[(state.featureExtractor(), action)]
+        feat=state.featureExtractor()
+        return self.QValues[(feat, action)] if (feat, action) in self.QValues else [0.0,0]
+
     def computeValueFromQValues(self, state):
         """
           Returns max_action Q(state,action)
@@ -323,7 +324,7 @@ class MCQAgent(ReinforcementAgent):
         """
           ep: epision for each game, [state, action, nextState, reward]
         """
-        finalScore=state.getScore() + state.getScore()-state.getScore(1)
+        finalScore=state.getScore() #+ state.getScore()-state.getScore(1)
         self.episodeRewards += finalScore
 
         for state, action, reward in self.epData:
@@ -357,8 +358,7 @@ class MCQAgent(ReinforcementAgent):
             The simulation should somehow ensure this is called
         """
         if not self.lastState is None:
-            reward = self.lastState.getScore()
-            reward += self.lastState.getScore()-self.lastState.getScore(1)
+            reward = state.getScore() #+ self.lastState.getScore()-self.lastState.getScore(1)
             self.epData.append([self.lastState.featureExtractor(), self.lastAction, reward])
             # self.observeTransition(self.lastState, self.lastAction, state, reward)
 

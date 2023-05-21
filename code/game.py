@@ -243,6 +243,9 @@ class Game:
                 sellerIdx = consumer.chooseSeller(self.state.sellerNum)
                 # print(f"Consumer {consumer.name} visit seller {sellerIdx}" )
                 self.record[-1][-1]["consumerVisit"] = sellerIdx
+                if sellerIdx==0:
+                    if 'observationFunction' in dir(self.agents[0]):
+                        self.agents[0].observationFunction(self.state)
                 sellerAgent = self.agents[sellerIdx]
                 # The seller give his choice(price)
                 sellerChoice = sellerAgent.getChoice(self.state)
@@ -261,9 +264,7 @@ class Game:
                     self.record[-1][-1]["sellerChoice"].append(sellerChoice)
 
                 self.state.updateSeller(eatIdx, sellerChoice)
-                if sellerIdx == 0:
-                    if 'observationFunction' in dir(self.agents[0]):
-                        self.agents[0].observationFunction(self.state)
+
                 # print(f"consumer {consumer.name} preference:{consumer.preference}")
                 self.record[-1][-1]["consumerPreference"] = consumer.preference.copy()
                 # print(f"seller {sellerIdx} balance: {self.agents[sellerIdx].getBalance()}")

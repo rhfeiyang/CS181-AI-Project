@@ -62,10 +62,10 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
             [['Loss', 'Win'][int(w)] for w in wins]))
 
     if "QValues" in dir(player):
-        with open('QValues_tmp.pickle', 'wb') as file:
+        with open(f'QValues_tmp.pickle', 'wb') as file:
             pickle.dump(player.QValues, file)
     if "weights" in dir(player):
-        with open('RLweights_tmp.pickle', 'wb') as file:
+        with open(f'RLweights_tmp.pickle', 'wb') as file:
             pickle.dump(player.weights, file)
 
     return games

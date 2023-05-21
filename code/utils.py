@@ -33,7 +33,10 @@ import inspect
 import heapq
 import random
 import io
-
+import numpy as np
+def argmax_rand(arr):
+    # break ties randomly, np.argmax() always picks first max
+    return np.random.choice(np.flatnonzero(arr == np.max(arr)))
 
 class FixedRandom:
     def __init__(self):
@@ -314,7 +317,8 @@ class Counter(dict):
             return None
         all = list(self.items())
         values = [x[1] for x in all]
-        maxIndex = values.index(max(values))
+        # maxIndex = values.index(max(values))
+        maxIndex = argmax_rand(values)  # resolve ties randomly
         return all[maxIndex][0]
 
     def sortedKeys(self):
