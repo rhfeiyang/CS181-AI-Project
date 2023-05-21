@@ -317,8 +317,8 @@ class Counter(dict):
             return None
         all = list(self.items())
         values = [x[1] for x in all]
-        # maxIndex = values.index(max(values))
-        maxIndex = argmax_rand(values)  # resolve ties randomly
+        maxIndex = values.index(max(values))
+        # maxIndex = argmax_rand(values)  # resolve ties randomly
         return all[maxIndex][0]
 
     def sortedKeys(self):

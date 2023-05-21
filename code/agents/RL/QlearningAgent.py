@@ -199,11 +199,11 @@ class ApproximateQAgent(SellerQAgent):
             # pass
         # print("weights: ", self.weights)
         # print("features: ", self.featExtractor.getFeatures(state, 'Stop'))
-        if self.episodesSoFar %100==0:
-            # for feature in self.featExtractor.getFeatures(state, 10):
-            #     print(f"{feature:15s}: weight:\t{self.weights[feature]:.6f},\t  | feature: \t{self.featExtractor.getFeatures(state, 10)[feature]:.8f}")
-            print(self.weights)
-            print()
+        # if self.episodesSoFar %100==0:
+        #     # for feature in self.featExtractor.getFeatures(state, 10):
+        #     #     print(f"{feature:15s}: weight:\t{self.weights[feature]:.6f},\t  | feature: \t{self.featExtractor.getFeatures(state, 10)[feature]:.8f}")
+        #     print(self.weights)
+        #     print()
 
 
 
