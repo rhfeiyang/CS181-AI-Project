@@ -26,7 +26,8 @@ def peopleFind(name):
     elif name=='neuralPredictSeller':
         pass
         # player=neuralPredictSeller
-
+    elif name=='ManualAgent':
+        player=ManualAgent
     else:
         raise Exception("Unknown player type")
     return player

@@ -27,7 +27,7 @@ def scoreEvaluationFunction2(currentGameState):
 def scoreEvaluationFunction3(currentGameState):
     scoreList = currentGameState.getAllScore()
 
-    return scoreList[0] - random.gauss(scoreList[1], scoreList[1]/20)
+    return scoreList[0] - random.gauss(scoreList[1], scoreList[1] / 20)
 
 
 def betterEvaluationFunction(currentGameState):
@@ -140,3 +140,46 @@ class AlphaBetaAgent(Agent):
                 bestChoice = choice
             alpha = max(alpha, v)
         return bestChoice if bestChoice else SellerChoices.NONE
+
+
+class ManualAgent(Agent):
+    def __init__(self, index=0, balance=0):
+        super().__init__(index, balance)
+
+    def getChoice(self, state):
+        self.printState(state)
+        print(f"Enter your choice of price: (H: high({SellerChoices.HIGH}), M: medium({SellerChoices.MEDIUM}), L: low({SellerChoices.LOW}), S: superlow({SellerChoices.SUPERLOW})")
+        while True:
+            choice = input()
+            if choice == 'H' or choice == 'h':
+                choice = SellerChoices.HIGH
+            elif choice == 'M' or choice == 'm':
+                choice = SellerChoices.MEDIUM
+            elif choice == 'L' or choice == 'l':
+                choice = SellerChoices.LOW
+            elif choice == 'S' or choice == 's':
+                choice = SellerChoices.SUPERLOW
+            else:
+                print("Invalid choice, please try again. (H: high, M: medium, L: low, S: superlow)")
+                continue
+            break
+        print(f"You choose {choice}")
+        return choice
+
+    def printState(self,state):
+        print("--------")
+        print(f"Current state(day {state.maxDay-state.restTime}):")
+        print(f"Consumer {state.curConsumer}: {state.nameList[state.curConsumer]} coming!")
+        print(f"Your balance: {state.getScore()}")
+        print(f"Other seller' balance: {state.getAllScore()[1:]}")
+        print(f"All consumers' preference: {state.getAllConsumersPreference()}")
+        print(f"{state.nameList[state.curConsumer]}'s preference is {state.getAllConsumersPreference()[state.curConsumer]}")
+
+    def final(self,state):
+        if state.isWin():
+            print("You win! Congratulation!")
+        else:
+            print("You lose! Don't give up!")
+        print("Your final score is: ",state.getScore())
+        print("--------")
+        input("Press any key to exit...")

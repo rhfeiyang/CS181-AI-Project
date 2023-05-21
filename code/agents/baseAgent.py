@@ -18,3 +18,4 @@ class Agent(Seller):
 
     def getBalance(self) -> float:
         raise Exception("The balance data is stored in the state(seller), not in the agent")
+

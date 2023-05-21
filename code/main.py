@@ -13,7 +13,7 @@ def parseargs():
     parser.add_argument('--numGames', type=int, default=50)
     parser.add_argument('--record', type=bool, default=False)
     parser.add_argument('--weightFile', type=str, default=None)
-    parser.add_argument('--agent', type=str, default=None, help='ExpectimaxAgent, AlphaBetaAgent, ApproximateQAgent, MCQAgent, neuralPredictSeller')
+    parser.add_argument('--agent', type=str, default=None, help='ExpectimaxAgent, AlphaBetaAgent, ApproximateQAgent, MCQAgent, neuralPredictSeller, ManualAgent')
     parser.add_argument('--expType',type=str,required=False)
     parser.add_argument('--rival', type=str, default=None,nargs='+', help='GreedySellerHigh, GreedySellerLow, GreedySellerSuperLow, RandomSeller')
     parser.add_argument('--consumerName',type=str, default=['Tom', 'Jerry'],nargs='+')
@@ -34,20 +34,32 @@ def parseargs():
     SellerChoices.LOW=args.lowPrice
     SellerChoices.SUPERLOW=args.superLowPrice
 
-    print("Train num:",args.numTraining)
-    print("Game num:",args.numGames)
-    print("Agent:", args.agent)
-    print("ConsumerName:", len(args.consumerName))
-    print("Rival:", args.rival)
-    print("save file name:", args.saveFileName)
-    print("init balance:", args.initBalance)
-    print("daily cost:", args.dailyCost)
-    print("daily income:", args.dailyIncome)
-    print("max day:", args.maxDay)
-    print("high price:", args.highPrice)
-    print("medium price:", args.mediumPrice)
-    print("low price:", args.lowPrice)
-    print("super low price:", args.superLowPrice)
+    if args.agent == "ManualAgent":
+        print("You are the manager of a restaurant. You need to make decisions to make the restaurant profitable.")
+        print("You have 4 choices: HIGH, MEDIUM, LOW, SUPERLOW for each consumer coming to your restaurant.")
+        print("Hight price will lead to high income but low customer satisfaction.")
+        print("Low price will lead to low income but high customer satisfaction.")
+        print("Meanwhile, you need to pay daily cost for the restaurant.")
+        print("You have some rivals in the market. You need to make your restaurant more attractive than your rivals.")
+        print("Try to get more income, prevent bankruptcy and beat your rivals!")
+        print("Good luck!")
+
+    else:
+        print("Train num:",args.numTraining)
+        print("Game num:",args.numGames)
+        print("Agent:", args.agent)
+        print("ConsumerName:", len(args.consumerName))
+        print("Rival:", args.rival)
+        print("save file name:", args.saveFileName)
+        print("init balance:", args.initBalance)
+        print("daily cost:", args.dailyCost)
+        print("daily income:", args.dailyIncome)
+        print("max day:", args.maxDay)
+        print("high price:", args.highPrice)
+        print("medium price:", args.mediumPrice)
+        print("low price:", args.lowPrice)
+        print("super low price:", args.superLowPrice)
+
     return args
 
 def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList: List[str], record: bool, numTraining=0, weightFile=None ,args=None):

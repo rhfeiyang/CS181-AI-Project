@@ -36,6 +36,7 @@ class GameState:
         self.dailyIncome = dailyIncome
         self.force = False
         self.restTime = maxDay
+        self.maxDay = maxDay
 
     def getCurrentConsumer(self):
         return self.consumers[self.curConsumer]
@@ -167,6 +168,7 @@ class Game:
         self.muteAgents = False
         self.gameOver = False
         self.record = []
+        self.realTime = False
         import io
         self.agentOutput = [io.StringIO() for agent in agents]
         # self.record={"day":[],"score":[],"balance":[],"consumerVisit":[],"agentChoice":[],"consumerPreference":[]}
