@@ -7,166 +7,7 @@ import numpy as np
 import pickle
 
 
-class ClassicGameRules:
-    """
-    These game rules manage the control flow of a game, deciding when
-    and how the game starts and ends.
-    """
-
-    def __init__(self, timeout=30):
-        self.timeout = timeout
-
-    def newGame(self, layout, pacmanAgent, ghostAgents, display, quiet=False, catchExceptions=False):
-        agents = [pacmanAgent] + ghostAgents[:layout.getNumGhosts()]
-        initState = GameState()
-        initState.initialize(layout, len(ghostAgents))
-        game = Game(agents, display, self, catchExceptions=catchExceptions)
-        game.state = initState
-        self.initialState = initState.deepCopy()
-        self.quiet = quiet
-        return game
-
-    def process(self, state, game):
-        """
-        Checks to see whether it is time to end the game.
-        """
-        if state.isWin():
-            self.win(state, game)
-        if state.isLose():
-            self.lose(state, game)
-
-    def win(self, state, game):
-        if not self.quiet:
-            print("Pacman emerges victorious! Score: %d" % state.data.score)
-        game.gameOver = True
-
-    def lose(self, state, game):
-        if not self.quiet:
-            print("Pacman died! Score: %d" % state.data.score)
-        game.gameOver = True
-
-    def getProgress(self, game):
-        return float(game.state.getNumFood()) / self.initialState.getNumFood()
-
-    def agentCrash(self, game, agentIndex):
-        if agentIndex == 0:
-            print("Pacman crashed")
-        else:
-            print("A ghost crashed")
-
-    def getMaxTotalTime(self, agentIndex):
-        return self.timeout
-
-    def getMaxStartupTime(self, agentIndex):
-        return self.timeout
-
-    def getMoveWarningTime(self, agentIndex):
-        return self.timeout
-
-    def getMoveTimeout(self, agentIndex):
-        return self.timeout
-
-    def getMaxTimeWarnings(self, agentIndex):
-        return 0
-
-
-def default(str):
-    return str + ' [Default: %default]'
-
-
-def readCommand(argv):
-    """
-    Processes the command used to run pacman from the command line.
-    """
-    from optparse import OptionParser
-    usageStr = """
-    USAGE:      python pacman.py <options>
-    EXAMPLES:   (1) python pacman.py
-                    - starts an interactive game
-                (2) python pacman.py --layout smallClassic --zoom 2
-                OR  python pacman.py -l smallClassic -z 2
-                    - starts an interactive game on a smaller board, zoomed in
-    """
-    parser = OptionParser(usageStr)
-
-    parser.add_option('-n', '--numGames', dest='numGames', type='int',
-                      help=default('the number of GAMES to play'), metavar='GAMES', default=1)
-    parser.add_option('-k', '--numghosts', type='int', dest='numGhosts',
-                      help=default('The maximum number of ghosts to use'), default=4)
-    parser.add_option('-f', '--fixRandomSeed', action='store_true', dest='fixRandomSeed',
-                      help='Fixes the random seed to always play the same game', default=False)
-    parser.add_option('-r', '--recordActions', action='store_true', dest='record',
-                      help='Writes game histories to a file (named by the time they were played)', default=False)
-    parser.add_option('--replay', dest='gameToReplay',
-                      help='A recorded game file (pickle) to replay', default=None)
-    parser.add_option('-a', '--agentArgs', dest='agentArgs',
-                      help='Comma separated values sent to agent. e.g. "opt1=val1,opt2,opt3=val3"')
-    parser.add_option('-x', '--numTraining', dest='numTraining', type='int',
-                      help=default('How many episodes are training (suppresses output)'), default=0)
-
-    options, otherjunk = parser.parse_args(argv)
-    if len(otherjunk) != 0:
-        raise Exception('Command line input not understood: ' + str(otherjunk))
-    args = dict()
-
-    # Fix the random seed
-    if options.fixRandomSeed:
-        random.seed('cs181')
-
-    # Choose a Pacman agent
-    pacmanType = loadAgent(options.pacman, noKeyboard)
-    agentOpts = parseAgentArgs(options.agentArgs)
-    if options.numTraining > 0:
-        args['numTraining'] = options.numTraining
-        if 'numTraining' not in agentOpts:
-            agentOpts['numTraining'] = options.numTraining
-    pacman = pacmanType(**agentOpts)  # Instantiate Pacman with agentArgs
-    args['pacman'] = pacman
-
-    # Don't display training games
-    if 'numTrain' in agentOpts:
-        options.numQuiet = int(agentOpts['numTrain'])
-        options.numIgnore = int(agentOpts['numTrain'])
-
-    # Choose a ghost agent
-    ghostType = loadAgent(options.ghost, noKeyboard)
-    args['ghosts'] = [ghostType(i+1) for i in range(options.numGhosts)]
-
-    # Choose a display format
-    if options.quietGraphics:
-        import textDisplay
-        args['display'] = textDisplay.NullGraphics()
-    elif options.textGraphics:
-        import textDisplay
-        textDisplay.SLEEP_TIME = options.frameTime
-        args['display'] = textDisplay.PacmanGraphics()
-    else:
-        import graphicsDisplay
-        args['display'] = graphicsDisplay.PacmanGraphics(
-            options.zoom, frameTime=options.frameTime)
-    args['numGames'] = options.numGames
-    args['record'] = options.record
-    args['catchExceptions'] = options.catchExceptions
-    args['timeout'] = options.timeout
-
-    # Special case: recorded games don't use the runGames method or args structure
-    if options.gameToReplay != None:
-        print('Replaying recorded game %s.' % options.gameToReplay)
-        import pickle
-        f = open(options.gameToReplay)
-        try:
-            recorded = pickle.load(f)
-        finally:
-            f.close()
-        recorded['display'] = args['display']
-        replayGame(**recorded)
-        sys.exit(0)
-
-    return args
-
-
-def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList:List[str], record: bool, numTraining=0,weightFile=None):
-
+def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList: List[str], record: bool, numTraining=0, weightFile=None):
     games = []
 
     if weightFile:
@@ -227,11 +68,11 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
         with open('RLweights_tmp.pickle', 'wb') as file:
             pickle.dump(player.weights, file)
 
-
     return games
 
-def plot(games:Game = None):
-    def getSellerAgentName(agent:Agent):
+
+def plot(games: Game = None):
+    def getSellerAgentName(agent: Agent):
         if isinstance(agent, ExpectimaxAgent):
             return 'ExpectimaxAgent'
         elif isinstance(agent, AlphaBetaAgent):
@@ -258,8 +99,8 @@ def plot(games:Game = None):
     sellerNum = games[0].sellerNum
     x = np.arange(1, games[0].maxDay+1)
 
-    sellerBalance = np.zeros(shape = (sellerNum, games[0].maxDay))
-    weight = np.zeros(shape = (sellerNum, games[0].maxDay))
+    sellerBalance = np.zeros(shape=(sellerNum, games[0].maxDay))
+    weight = np.zeros(shape=(sellerNum, games[0].maxDay))
     for game in games:
         record = game.record
         for i in range(sellerNum):
@@ -272,8 +113,7 @@ def plot(games:Game = None):
     for i in range(sellerNum):
         plt.plot(x, sellerBalance[i],
                  label=f'{getSellerAgentName(games[0].agents[i])}',
-                 linestyle='-' if i==0 else '--')
-
+                 linestyle='-' if i == 0 else '--')
 
     plt.title(f'Average Balance of Different Seller Agents in {len(games)} Games')
     plt.xlabel('Day')
@@ -282,7 +122,6 @@ def plot(games:Game = None):
     plt.xlim(1, game.maxDay)
     # plt.show()
     plt.savefig('output.png')
-
 
 
 if __name__ == '__main__':
@@ -300,20 +139,12 @@ if __name__ == '__main__':
     # runGames(**args)
     consumerNameList = ['Tom', 'Jerry']
     player = MCQAgent()
-    numTraining=5000
-    player.numTraining=numTraining
+    numTraining = 5000
+    player.numTraining = numTraining
     rivals = [GreedySellerHigh(index=1)]
-
-    # game = Game([ApproximateQAgent(), RandomSeller(index=1)],
-    #             consumerNum=2, nameList=['Tom', 'Jerry'],
-    #             balance=20, dailyCost=1, dailyIncome=0)
 
     random.seed('cs181')
     # runGames(player, rivals, 5, record=True, numTraining=0)
-    games=runGames(player, rivals, numTraining+50, consumerNameList, record=False, numTraining=numTraining,weightFile="QValues_tmp.pickle")
+    games = runGames(player, rivals, numTraining+50, consumerNameList, record=False,
+                     numTraining=numTraining, weightFile="QValues_tmp.pickle")
     # plot(games)
-    # print("Score:",finalGameState.getScore())
-
-    # import cProfile
-    # cProfile.run("runGames( **args )")
-

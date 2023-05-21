@@ -35,10 +35,10 @@ class ValueEstimationAgent(Agent):
         self.discount = float(gamma)
         self.numTraining = int(numTraining)
 
-
     ####################################
     #    Override These Functions      #
     ####################################
+
     def getQValue(self, state, action):
         """
         Should return Q(state,action)

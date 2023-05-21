@@ -9,11 +9,7 @@ class SellerChoices:
 
 
 class Seller:
-    def __init__(self, index: int, balance: float=0, benefitRule={SellerChoices.HIGH: 1.0,
-                                                                SellerChoices.MEDIUM: 0.0,
-                                                                SellerChoices.LOW: -1.0,
-                                                                SellerChoices.SUPERLOW: -2.0}
-                 ):
+    def __init__(self, index: int, balance: float = 0):
         '''
         balance: at the start, all the sellers have the same balance(property)
         when balance<0, the seller go bankrupt

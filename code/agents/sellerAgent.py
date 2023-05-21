@@ -22,8 +22,10 @@ class SellerAgent(Agent):
 
 class RandomSeller(SellerAgent):
     '''A seller that always chooses a random action.'''
+
     def __init__(self, index):
         super().__init__(index)
+
     def getDistribution(self, state):
         dist = utils.Counter()
         for a in state.getLegalChoices(self.index):
@@ -47,6 +49,7 @@ class GreedySellerHigh(SellerAgent):
                 dist[a] = 0.0
         dist.normalize()
         return dist
+
 
 class GreedySellerLow(SellerAgent):
     '''

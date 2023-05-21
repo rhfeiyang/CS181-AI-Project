@@ -8,16 +8,9 @@ from numpy import argmax
 from typing import List
 import sys
 
-class Configuration:
-    pass
-
-
-class AgentState:
-    pass
-
 
 class GameState:
-    def __init__(self, agents: List[Seller], sellerNum: int, consumerNum: int, nameList: list, maxDay:int, balance: float=None, dailyCost: float = 0, dailyIncome: float = 0):
+    def __init__(self, agents: List[Seller], sellerNum: int, consumerNum: int, nameList: list, maxDay: int, balance: float = None, dailyCost: float = 0, dailyIncome: float = 0):
         '''
         balance: at the start, all the sellers have the same balance(property)
         '''
@@ -66,7 +59,7 @@ class GameState:
     def isLose(self):
         return not self.sellers[0].isLive()
 
-    def getScore(self, agentIndex: int=0):
+    def getScore(self, agentIndex: int = 0):
         return self.sellers[agentIndex].getScore()
 
     def getAllScore(self):
@@ -80,16 +73,16 @@ class GameState:
 
     def getLegalChoices(self, agentIndex: int):
         return [SellerChoices.HIGH, SellerChoices.MEDIUM, SellerChoices.LOW, SellerChoices.SUPERLOW]
+
     def featureExtractor(self):
-        features={}
+        features = {}
 
         for i in range(self.sellerNum):
-            features['seller'+str(i)+'_score']=self.sellers[i].getScore()
-        features['consumerPreference']=tuple([tuple([round(p) for p in i.preference]) for i in self.consumers])
+            features['seller'+str(i)+'_score'] = self.sellers[i].getScore()
+        features['consumerPreference'] = tuple([tuple([round(p) for p in i.preference]) for i in self.consumers])
 
-
-        features['curConsumer']=self.curConsumer
-        features['restTime']=self.restTime
+        features['curConsumer'] = self.curConsumer
+        features['restTime'] = self.restTime
         # features['consumerNum']=self.consumerNum
         # features['sellerNum']=self.sellerNum
         # features['dailyCost']=self.dailyCost
@@ -102,8 +95,10 @@ class GameState:
         Copy the current GameState
         return: the copy of the current GameState
         '''
-        newGameState = GameState(deepcopy(self.sellers),self.sellerNum, self.consumerNum, self.nameList, self.restTime, None, self.dailyCost, self.dailyIncome)
-        newGameState.consumers = [Consumer(i, self.nameList[i], self.consumers[i].preference.copy()) for i in range(self.consumerNum)]
+        newGameState = GameState(deepcopy(self.sellers), self.sellerNum, self.consumerNum,
+                                 self.nameList, self.restTime, None, self.dailyCost, self.dailyIncome)
+        newGameState.consumers = [Consumer(i, self.nameList[i], self.consumers[i].preference.copy())
+                                  for i in range(self.consumerNum)]
         newGameState.curConsumer = self.curConsumer
         # newGameState.restTime = self.restTime
         # for seller in newGameState.sellers:
@@ -178,6 +173,7 @@ class Game:
         # self.agentTimeout = False
         # import io
         # self.agentOutput = [io.StringIO() for agent in agents]
+
     def mute(self, agentIndex):
         if not self.muteAgents:
             return
@@ -195,6 +191,7 @@ class Game:
         # Revert stdout/stderr to originals
         sys.stdout = OLD_STDOUT
         sys.stderr = OLD_STDERR
+
     def showRecord(self):
         print("----Game Start----")
         for day in range(len(self.record)):
@@ -264,7 +261,7 @@ class Game:
                     self.record[-1][-1]["sellerChoice"].append(sellerChoice)
 
                 self.state.updateSeller(eatIdx, sellerChoice)
-                if sellerIdx==0:
+                if sellerIdx == 0:
                     if 'observationFunction' in dir(self.agents[0]):
                         self.agents[0].observationFunction(self.state)
                 # print(f"consumer {consumer.name} preference:{consumer.preference}")
@@ -287,7 +284,8 @@ class Game:
             self.record[-1][-1]["seller"] = []
             for seller in self.agents:
                 # print(f"Seller {seller.index} balance: {seller.getBalance()}")
-                self.record[-1][-1]["seller"].append({"name": seller.index, "balance": self.state.getScore(seller.index)})
+                self.record[-1][-1]["seller"].append({"name": seller.index,
+                                                     "balance": self.state.getScore(seller.index)})
         self.playerScore = self.state.getScore()
         scores = [agent.getScore() for agent in self.state.sellers]
         # print(f"Final scores: {scores}, end day: {day}")

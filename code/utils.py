@@ -464,9 +464,10 @@ class Counter(dict):
             addend[key] = -1 * y[key]
         return addend
 
+
 class CounterMC(Counter):
     def __getitem__(self, idx):
-        self.setdefault(idx, [0.0 ,0])
+        self.setdefault(idx, [0.0, 0])
         return dict.__getitem__(self, idx)
 
 

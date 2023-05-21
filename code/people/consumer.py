@@ -3,6 +3,8 @@ from .seller import Seller, SellerChoices
 from utils import flipCoin
 import numpy as np
 from typing import List
+
+
 class Consumer:
     def __init__(self, index: int, name: str, preference: List[int] = None):
         """
@@ -23,7 +25,8 @@ class Consumer:
         seller: the id of seller asking
         return: if the seller is the one that the consumer has the highest preference
         """
-        return np.argmax(self.preference)==seller
+        return np.argmax(self.preference) == seller
+
     def hasPreference(self) -> bool:
         # if not all value in preference list is -1, then has preference
         return not all([x == 0 for x in self.preference])
@@ -44,7 +47,6 @@ class Consumer:
         return: the id of seller chosen(randomly)
         """
         return random.randint(0, n - 1)
-
 
     def decide(self, index: int, sellerChoice: int):
         """
@@ -74,8 +76,6 @@ class Consumer:
         else:  # no preference
             # eat here, but with preference changed
             eatIdx = index
-
-
 
         # else:  # no preference
         #     # Multiple sellers
