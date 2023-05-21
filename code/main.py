@@ -281,13 +281,13 @@ def run_test(playerAgent, sellerAgent, belief, depth, scoreFunction):
         player = ExpectimaxAgentKnowingRecord(neuralPredictSeller , scoreFunction, depth)
     elif sellerAgent == GreedySellerHigh:
         rivals = [sellerAgent(index=1)]
-        player = ExpectimaxAgentKnowingRecord(belief, scoreFunction, depth)
+        player = ExpectimaxAgent(belief, scoreFunction, depth)
     elif sellerAgent == GreedySellerLow:
         rivals = [sellerAgent(index=1)]
-        player = ExpectimaxAgentKnowingRecord(belief, scoreFunction, depth)
+        player = ExpectimaxAgent(belief, scoreFunction, depth)
     elif sellerAgent == GreedySellerSuperLow:
         rivals = [sellerAgent(index=1)]
-        player = ExpectimaxAgentKnowingRecord(belief, scoreFunction, depth)
+        player = ExpectimaxAgent(belief, scoreFunction, depth)
     else:
         rivals = [sellerAgent(index=1)]
         utils.raiseNotDefined()
@@ -321,8 +321,9 @@ if __name__ == '__main__':
 
     > python main.py --help
     """
-    # args = readCommand(sys.argv[1:])  # Get game components based on input
+    args = sys.argv[1:]  # Get game components based on input
     # runGames(**args)
+    id = int(args[0])
     consumerNameList = ['Tom', 'Jerry']
     consumerNum = len(consumerNameList)
     sellerNum = 2
@@ -344,19 +345,16 @@ if __name__ == '__main__':
         for belief in beliefs:
             for depth in depths:
                 for scoreFunction in scoreFunctions:
+                    if id > 0: 
+                        id -= 1
+                        continue
                     print(f'playerAgent:{ExpectimaxAgentKnowingRecord}, sellerAgent:{sellerAgent}, belief:{belief}, depth:{depth}, scoreFunction:{scoreFunction}')
                     #make the following function multi-threaded
                     # start a new thread for the test. Write codes
-                    # run_test(ExpectimaxAgentKnowingRecord, sellerAgent, belief, depth, scoreFunction)
-                    allThreads.append(testThread(sellerAgent, belief, depth, scoreFunction))
-                    if len(allThreads) == 2:
-                        break
+                    run_test(ExpectimaxAgentKnowingRecord, sellerAgent, belief, depth, scoreFunction)
+                    # allThreads.append(testThread(sellerAgent, belief, depth, scoreFunction))
                         
-
-    for thread in allThreads:
-        thread.start()
-    for thread in allThreads:
-        thread.join()
+    # start all threads in allThreads immediately
     exit(0)
     player = ExpectimaxAgent(GreedySellerLow)
     rivals = [GreedySellerLow(index=1)]
