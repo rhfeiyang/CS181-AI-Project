@@ -22,8 +22,18 @@ def parseargs():
     parser.add_argument('--dailyCost', type=int, default=1)
     parser.add_argument('--dailyIncome', type=int, default=0)
     parser.add_argument('--maxDay', type=int, default=100)
+    parser.add_argument('--highPrice', type=int, default=12)
+    parser.add_argument('--mediumPrice', type=int, default=10)
+    parser.add_argument('--lowPrice', type=int, default=8)
+    parser.add_argument('--superLowPrice', type=int, default=6)
+
     # parser.add_argument('--consumerNum',type=int,default=None)
     args = parser.parse_args()
+    SellerChoices.HIGH=args.highPrice
+    SellerChoices.MEDIUM=args.mediumPrice
+    SellerChoices.LOW=args.lowPrice
+    SellerChoices.SUPERLOW=args.superLowPrice
+
     print("Train num:",args.numTraining)
     print("Game num:",args.numGames)
     print("Agent:", args.agent)
@@ -194,6 +204,7 @@ if __name__ == '__main__':
     random.seed('cs181')
     np.random.seed(181)
     args=parseargs()
+
     numTraining=args.numTraining
     numGames=args.numGames
     record=args.record
