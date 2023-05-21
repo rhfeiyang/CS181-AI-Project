@@ -188,7 +188,7 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int,consumerNameList:
         
         game = Game([player]+rivals,
                     consumerNum=len(consumerNameList), nameList=consumerNameList,
-                    balance=10*(len(consumerNameList)), dailyCost=1, dailyIncome=0, maxDay=100)
+                    balance=20*(len(consumerNameList)), dailyCost=1, dailyIncome=0, maxDay=100)
         game.run()
         if not beQuiet:
             games.append(game)
@@ -221,6 +221,7 @@ def plot(games:Game = None, name:str = ""):
     def getSellerAgentName(agent:Agent):
         if isinstance(agent, ExpectimaxAgent):
             return 'ExpectimaxAgent'
+        
         elif isinstance(agent, AlphaBetaAgent):
             return 'AlphaBetaAgent'
         elif isinstance(agent, RandomSeller):
@@ -327,7 +328,7 @@ if __name__ == '__main__':
     """
     args = sys.argv[1:]  # Get game components based on input
     # runGames(**args)
-    id = int(args[0])
+    # id = int(args[0])
     consumerNameList = ['Tom', 'Jerry']
     consumerNum = len(consumerNameList)
     sellerNum = 2
@@ -335,7 +336,7 @@ if __name__ == '__main__':
     playerAgent = ExpectimaxAgentKnowingRecord
     sellerAgents = [RandomSeller, GreedySellerHigh, GreedySellerLow, GreedySellerSuperLow]
     beliefs = [RandomSeller,neuralPredictSeller, GreedySellerHigh, GreedySellerLow, GreedySellerSuperLow]
-    depths = ['1','2','3']
+    depths = ['1']
     scoreFunctions = ["scoreEvaluationFunction", "scoreEvaluationFunction2","scoreEvaluationFunction3","betterEvaluationFunction"]
 
     #enuerate all possible combinations
@@ -345,17 +346,20 @@ if __name__ == '__main__':
     # convert the following code to a function
     allThreads = []
     cnt = 0
+    np.random.seed(hash('cs181') % 2147483648)
+    random.seed('cs181')
+    
     for sellerAgent in sellerAgents:
         for belief in beliefs:
             for depth in depths:
                 for scoreFunction in scoreFunctions:
-                    if id > 0: 
-                        id -= 1
-                        continue
+                    # if id > 0: 
+                        # id -= 1/
+                        # continue
                     print(f'playerAgent:{ExpectimaxAgentKnowingRecord}, sellerAgent:{sellerAgent}, belief:{belief}, depth:{depth}, scoreFunction:{scoreFunction}')
                     #make the following function multi-threaded
                     # start a new thread for the test. Write codes
-                    run_test(ExpectimaxAgentKnowingRecord, sellerAgent, belief, depth, scoreFunction,sellerNum,consumerNum)
+                    # run_test(ExpectimaxAgentKnowingRecord, sellerAgent, belief, depth, scoreFunction,sellerNum,consumerNum)
                     # allThreads.append(testThread(sellerAgent, belief, depth, scoreFunction))
                         
     # start all threads in allThreads immediately

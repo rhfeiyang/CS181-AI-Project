@@ -1,0 +1,320 @@
+RandomSeller RandomSeller 1 scoreEvaluationFunction
+Average Score: 29.1
+ Win Rate:      50/50 (1.00)
+
+RandomSeller RandomSeller 1 scoreEvaluationFunction2
+Average Score: 29.96
+ Win Rate:      50/50 (1.00)
+
+RandomSeller RandomSeller 1 scoreEvaluationFunction3
+Average Score: 29.7
+ Win Rate:      50/50 (1.00)
+
+RandomSeller RandomSeller 1 betterEvaluationFunction
+Average Score: 30.78
+ Win Rate:      50/50 (1.00)
+
+RandomSeller neuralPredictSeller 1 scoreEvaluationFunction
+Average Score: 29.9
+ Win Rate:      50/50 (1.00)
+
+RandomSeller neuralPredictSeller 1 scoreEvaluationFunction2
+Average Score: 29.96
+ Win Rate:      50/50 (1.00)
+
+RandomSeller neuralPredictSeller 1 scoreEvaluationFunction3
+Average Score: 28.42
+ Win Rate:      50/50 (1.00)
+
+RandomSeller neuralPredictSeller 1 betterEvaluationFunction
+Average Score: 30.94
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerHigh 1 scoreEvaluationFunction
+Average Score: 29.4
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerHigh 1 scoreEvaluationFunction2
+Average Score: 28.88
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerHigh 1 scoreEvaluationFunction3
+Average Score: 29.04
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerHigh 1 betterEvaluationFunction
+Average Score: 30.9
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerLow 1 scoreEvaluationFunction
+Average Score: 29.74
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerLow 1 scoreEvaluationFunction2
+Average Score: 30.16
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerLow 1 scoreEvaluationFunction3
+Average Score: 29.88
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerLow 1 betterEvaluationFunction
+Average Score: 31.06
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerSuperLow 1 scoreEvaluationFunction
+Average Score: 29.44
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerSuperLow 1 scoreEvaluationFunction2
+Average Score: 28.56
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerSuperLow 1 scoreEvaluationFunction3
+Average Score: 29.8
+ Win Rate:      50/50 (1.00)
+
+RandomSeller GreedySellerSuperLow 1 betterEvaluationFunction
+Average Score: 30.62
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh RandomSeller 1 scoreEvaluationFunction
+Average Score: 138.84
+ Win Rate:      31/50 (0.62)
+
+GreedySellerHigh RandomSeller 1 scoreEvaluationFunction2
+Average Score: 141.04
+ Win Rate:      26/50 (0.52)
+
+GreedySellerHigh RandomSeller 1 scoreEvaluationFunction3
+Average Score: 156.36
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh RandomSeller 1 betterEvaluationFunction
+Average Score: 204.96
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh neuralPredictSeller 1 scoreEvaluationFunction
+Average Score: 144.28
+ Win Rate:      29/50 (0.58)
+
+GreedySellerHigh neuralPredictSeller 1 scoreEvaluationFunction2
+Average Score: 141.92
+ Win Rate:      38/50 (0.76)
+
+GreedySellerHigh neuralPredictSeller 1 scoreEvaluationFunction3
+Average Score: 148.32
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh neuralPredictSeller 1 betterEvaluationFunction
+Average Score: 205.6
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh GreedySellerHigh 1 scoreEvaluationFunction
+Average Score: 138.64
+ Win Rate:      25/50 (0.50)
+
+GreedySellerHigh GreedySellerHigh 1 scoreEvaluationFunction2
+Average Score: 139.08
+ Win Rate:      21/50 (0.42)
+
+GreedySellerHigh GreedySellerHigh 1 scoreEvaluationFunction3
+Average Score: 139.08
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh GreedySellerHigh 1 betterEvaluationFunction
+Average Score: 205.72
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh GreedySellerLow 1 scoreEvaluationFunction
+Average Score: 140.48
+ Win Rate:      25/50 (0.50)
+
+GreedySellerHigh GreedySellerLow 1 scoreEvaluationFunction2
+Average Score: 82.24
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh GreedySellerLow 1 scoreEvaluationFunction3
+Average Score: 78.28
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh GreedySellerLow 1 betterEvaluationFunction
+Average Score: 206.16
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh GreedySellerSuperLow 1 scoreEvaluationFunction
+Average Score: 141.48
+ Win Rate:      31/50 (0.62)
+
+GreedySellerHigh GreedySellerSuperLow 1 scoreEvaluationFunction2
+Average Score: 77.24
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh GreedySellerSuperLow 1 scoreEvaluationFunction3
+Average Score: 73.0
+ Win Rate:      50/50 (1.00)
+
+GreedySellerHigh GreedySellerSuperLow 1 betterEvaluationFunction
+Average Score: 205.76
+ Win Rate:      50/50 (1.00)
+
+GreedySellerLow RandomSeller 1 scoreEvaluationFunction
+Average Score: 9.72
+ Win Rate:      0/50 (0.00)
+
+GreedySellerLow RandomSeller 1 scoreEvaluationFunction2
+Average Score: 9.76
+ Win Rate:      0/50 (0.00)
+
+GreedySellerLow RandomSeller 1 scoreEvaluationFunction3
+Average Score: 6.26
+ Win Rate:      0/50 (0.00)
+
+GreedySellerLow RandomSeller 1 betterEvaluationFunction
+Average Score: 40.32
+ Win Rate:      50/50 (1.00)
+
+GreedySellerLow neuralPredictSeller 1 scoreEvaluationFunction
+Average Score: 17.48
+ Win Rate:      0/50 (0.00)
+
+GreedySellerLow neuralPredictSeller 1 scoreEvaluationFunction2
+Average Score: 41.48
+ Win Rate:      38/50 (0.76)
+
+GreedySellerLow neuralPredictSeller 1 scoreEvaluationFunction3
+Average Score: 1.62
+ Win Rate:      0/50 (0.00)
+
+GreedySellerLow neuralPredictSeller 1 betterEvaluationFunction
+Average Score: 38.72
+ Win Rate:      50/50 (1.00)
+
+GreedySellerLow GreedySellerHigh 1 scoreEvaluationFunction
+Average Score: 9.6
+ Win Rate:      0/50 (0.00)
+
+GreedySellerLow GreedySellerHigh 1 scoreEvaluationFunction2
+Average Score: 6.64
+ Win Rate:      0/50 (0.00)
+
+GreedySellerLow GreedySellerHigh 1 scoreEvaluationFunction3
+Average Score: -0.34
+ Win Rate:      0/50 (0.00)
+
+GreedySellerLow GreedySellerHigh 1 betterEvaluationFunction
+Average Score: 39.8
+ Win Rate:      50/50 (1.00)
+
+GreedySellerLow GreedySellerLow 1 scoreEvaluationFunction
+Average Score: 9.72
+ Win Rate:      0/50 (0.00)
+
+GreedySellerLow GreedySellerLow 1 scoreEvaluationFunction2
+Average Score: 1.76
+ Win Rate:      39/50 (0.78)
+
+GreedySellerLow GreedySellerLow 1 scoreEvaluationFunction3
+Average Score: 0.52
+ Win Rate:      17/50 (0.34)
+
+GreedySellerLow GreedySellerLow 1 betterEvaluationFunction
+Average Score: 40.72
+ Win Rate:      50/50 (1.00)
+
+GreedySellerLow GreedySellerSuperLow 1 scoreEvaluationFunction
+Average Score: 8.0
+ Win Rate:      0/50 (0.00)
+
+GreedySellerLow GreedySellerSuperLow 1 scoreEvaluationFunction2
+Average Score: 1.92
+ Win Rate:      46/50 (0.92)
+
+GreedySellerLow GreedySellerSuperLow 1 scoreEvaluationFunction3
+Average Score: 0.6
+ Win Rate:      21/50 (0.42)
+
+GreedySellerLow GreedySellerSuperLow 1 betterEvaluationFunction
+Average Score: 39.4
+ Win Rate:      50/50 (1.00)
+
+GreedySellerSuperLow RandomSeller 1 scoreEvaluationFunction
+Average Score: 0.72
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow RandomSeller 1 scoreEvaluationFunction2
+Average Score: 2.2
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow RandomSeller 1 scoreEvaluationFunction3
+Average Score: 0.92
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow RandomSeller 1 betterEvaluationFunction
+Average Score: 20.32
+ Win Rate:      50/50 (1.00)
+
+GreedySellerSuperLow neuralPredictSeller 1 scoreEvaluationFunction
+Average Score: 1.64
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow neuralPredictSeller 1 scoreEvaluationFunction2
+Average Score: 13.0
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow neuralPredictSeller 1 scoreEvaluationFunction3
+Average Score: 0.04
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow neuralPredictSeller 1 betterEvaluationFunction
+Average Score: 21.12
+ Win Rate:      50/50 (1.00)
+
+GreedySellerSuperLow GreedySellerHigh 1 scoreEvaluationFunction
+Average Score: 2.64
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow GreedySellerHigh 1 scoreEvaluationFunction2
+Average Score: 2.12
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow GreedySellerHigh 1 scoreEvaluationFunction3
+Average Score: -0.58
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow GreedySellerHigh 1 betterEvaluationFunction
+Average Score: 24.42
+ Win Rate:      50/50 (1.00)
+
+GreedySellerSuperLow GreedySellerLow 1 scoreEvaluationFunction
+Average Score: 2.6
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow GreedySellerLow 1 scoreEvaluationFunction2
+Average Score: 0.0
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow GreedySellerLow 1 scoreEvaluationFunction3
+Average Score: 1.26
+ Win Rate:      21/50 (0.42)
+
+GreedySellerSuperLow GreedySellerLow 1 betterEvaluationFunction
+Average Score: 22.18
+ Win Rate:      50/50 (1.00)
+
+GreedySellerSuperLow GreedySellerSuperLow 1 scoreEvaluationFunction
+Average Score: 1.24
+ Win Rate:      0/50 (0.00)
+
+GreedySellerSuperLow GreedySellerSuperLow 1 scoreEvaluationFunction2
+Average Score: 3.7
+ Win Rate:      46/50 (0.92)
+
+GreedySellerSuperLow GreedySellerSuperLow 1 scoreEvaluationFunction3
+Average Score: 2.54
+ Win Rate:      38/50 (0.76)
+
+GreedySellerSuperLow GreedySellerSuperLow 1 betterEvaluationFunction
+Average Score: 19.36
+ Win Rate:      50/50 (1.00)
+

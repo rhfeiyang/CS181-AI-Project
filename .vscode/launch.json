@@ -11,6 +11,7 @@
                         "cwd": "${workspaceFolder}/code",
                         "program": "${workspaceFolder}/code/main.py",
                         "console": "integratedTerminal",
+                        "args": ["20"],
                         "justMyCode": true
                 }
                 
