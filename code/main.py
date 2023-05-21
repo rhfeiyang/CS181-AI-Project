@@ -271,7 +271,7 @@ def plot(games:Game = None, name:str = ""):
     plt.savefig('./results/' + name + '_output.png')
 
 
-def run_test(playerAgent, sellerAgent, belief, depth, scoreFunction):
+def run_test(playerAgent, sellerAgent, belief, depth, scoreFunction,sellerNum,consumerNum):
     print(f'playerAgent:{ExpectimaxAgentKnowingRecord}, sellerAgent:{sellerAgent}, belief:{belief}, depth:{depth}, scoreFunction:{scoreFunction}')
     if sellerAgent == RandomSeller:
         rivals = [RandomSeller(index=1)]
@@ -291,6 +291,10 @@ def run_test(playerAgent, sellerAgent, belief, depth, scoreFunction):
     else:
         rivals = [sellerAgent(index=1)]
         utils.raiseNotDefined()
+    
+    if belief == neuralPredictSeller:
+        rivals = [sellerAgent(index=1)]
+        player = ExpectimaxAgentKnowingRecord(neuralPredictSeller(1,sellerNum,consumerNum) , scoreFunction, depth)
 
     game = runGames(player, rivals, 50, consumerNameList, record=True)
     #generate this test's name, use if-else
@@ -351,7 +355,7 @@ if __name__ == '__main__':
                     print(f'playerAgent:{ExpectimaxAgentKnowingRecord}, sellerAgent:{sellerAgent}, belief:{belief}, depth:{depth}, scoreFunction:{scoreFunction}')
                     #make the following function multi-threaded
                     # start a new thread for the test. Write codes
-                    run_test(ExpectimaxAgentKnowingRecord, sellerAgent, belief, depth, scoreFunction)
+                    run_test(ExpectimaxAgentKnowingRecord, sellerAgent, belief, depth, scoreFunction,sellerNum,consumerNum)
                     # allThreads.append(testThread(sellerAgent, belief, depth, scoreFunction))
                         
     # start all threads in allThreads immediately
