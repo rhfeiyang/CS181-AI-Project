@@ -311,7 +311,7 @@ class MCQAgent(ReinforcementAgent):
         else:
             action=self.getPolicy(state)
             self.doAction(state, action)
-            return self.getPolicy(state)
+            return action
     def doAction(self, state, action):
         """
             Called by inherited class when
@@ -326,7 +326,6 @@ class MCQAgent(ReinforcementAgent):
         """
         finalScore=state.getScore() #+ state.getScore()-state.getScore(1)
         self.episodeRewards += finalScore
-
         for state, action, reward in self.epData:
             tmpReward=finalScore-reward
             value,times=self.QValues[(state,action)]
@@ -358,7 +357,7 @@ class MCQAgent(ReinforcementAgent):
             The simulation should somehow ensure this is called
         """
         if not self.lastState is None:
-            reward = state.getScore() #+ self.lastState.getScore()-self.lastState.getScore(1)
+            reward = state.getScore() #+ state.getScore()-state.getScore(1)
             self.epData.append([self.lastState.featureExtractor(), self.lastAction, reward])
             # self.observeTransition(self.lastState, self.lastAction, state, reward)
 

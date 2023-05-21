@@ -146,5 +146,5 @@ if __name__ == '__main__':
     random.seed('cs181')
     # runGames(player, rivals, 5, record=True, numTraining=0)
     games = runGames(player, rivals, numTraining+50, consumerNameList, record=False,
-                     numTraining=numTraining, weightFile="QValues_tmp.pickle")
+                     numTraining=numTraining, weightFile=None)
     # plot(games)
