@@ -84,6 +84,68 @@ class ExpectimaxAgent(Agent):
                 bestChoice = choice
         return bestChoice if bestChoice else SellerChoices.NONE
 
+class ExpectimaxAgentKnowingRecord(Agent):
+    """
+        Your agent for the mini-contest
+    """
+
+    def __init__(self, belief: SellerAgent, evalFn='betterEvaluationFunction', depth='3'):
+        super().__init__()
+        self.index = 0  # Pacman is always agent index 0
+        self.evaluationFunction = utils.lookup(evalFn, globals())
+        self.depth = int(depth)
+        self.belief = belief
+        self.lastObserve = 0,0
+
+    def observe(self,gameState):
+        x,y = self.lastObserve
+        if len(gameState.record_readonly) > x:
+            for i in range(x,len(gameState.record_readonly)):
+                for k in range(len(gameState.record_readonly[i])-1):
+                    curRecord = gameState.record_readonly[i][k]
+                    if curRecord['consumerVisit'] == self.index:
+                        self.belief.model.addData(curRecord['consumerPreference'],curRecord['sellerBalance'],curRecord['sellerChoice'])
+                        self.lastObserve = i,k
+
+    def getChoice(self, gameState):
+        # print(gameState.record_readonly[-1][-1])
+        self.observe(gameState)
+        def max_value(gameState, depth, agentIndex):
+            v = -999999
+            for choice in gameState.getLegalChoices(agentIndex):
+                v = max(v, minimax(gameState.getNextState(
+                    agentIndex, choice), depth, agentIndex + 1))
+            return v
+
+        def exp_value(gameState, depth, agentIndex):
+            v = 0
+            sellerB = self.belief(agentIndex)
+            choiceDistribution = sellerB.getDistribution(gameState)
+
+            for choice, weight in choiceDistribution.items():
+                if agentIndex == gameState.getNumAgents() - 1:
+                    v += minimax(gameState.getNextState(agentIndex, choice), depth - 1, 0) * weight
+                else:
+                    v += minimax(gameState.getNextState(agentIndex, choice), depth, agentIndex + 1) * weight
+            return v
+
+        def minimax(gameState, depth, agentIndex):
+            if gameState.isWin() or gameState.isLose() or depth == 0:
+                return self.evaluationFunction(gameState)
+            if agentIndex == 0:
+                return max_value(gameState, depth, agentIndex)
+            else:
+                return exp_value(gameState, depth, agentIndex)
+
+        v = -999999
+        bestChoice = None
+        for choice in gameState.getLegalChoices(0):
+            minMaxVal = minimax(gameState.getNextState(0, choice), self.depth, 1)
+            if v < minMaxVal:
+                v = minMaxVal
+                bestChoice = choice
+        return bestChoice if bestChoice else SellerChoices.NONE
+
 
 class AlphaBetaAgent(Agent):
     """

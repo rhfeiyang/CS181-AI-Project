@@ -38,6 +38,7 @@ class GameState:
         self.dailyCost = dailyCost
         self.dailyIncome = dailyIncome
         self.force = False
+        self.record_readonly = []
 
     def getCurrentConsumer(self):
         return self.consumers[self.curConsumer]
@@ -191,6 +192,7 @@ class Game:
         day = 0
         # if ("registerInitialState" in dir(self.agents[0])):
         #     self.agents[0].registerInitialState(self.state)
+        self.state.record_readonly = self.record
         while not self.gameOver and day < self.maxDay:
             day += 1
             print(f"----Day {day} start----")

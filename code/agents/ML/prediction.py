@@ -14,10 +14,10 @@ class neuralNetworkPredictionModel():
                 self.w0 = nn.Parameter(sellerNum + 1,50)
                 self.b0 = nn.Parameter(1,50)
 
-                self.w1 = nn.Parameter(50,50)
-                self.b1 = nn.Parameter(1,50)
+                self.w1 = nn.Parameter(50,20)
+                self.b1 = nn.Parameter(1,20)
 
-                self.w2 = nn.Parameter(50,5)
+                self.w2 = nn.Parameter(20,5)
                 self.b2 = nn.Parameter(1,5)
 
                 self.learningRate = -0.05
@@ -28,12 +28,18 @@ class neuralNetworkPredictionModel():
                 self.labels = []
 
         def run(self, x) -> nn.Node:
+                '''
+                x is a array-like object
+                '''
                 # example
                 # y = nn.ReLU(nn.AddBias(nn.Linear(x, self.w0), self.b0))
                 # y = nn.ReLU(nn.AddBias(nn.Linear(y, self.w1), self.b1))
                 # y = nn.ReLU(nn.AddBias(nn.Linear(y, self.w2), self.b2))
                 # y = nn.AddBias(nn.Linear(y, self.w3), self.b3)
+                
                 x = np.array(x)
+                # squeeze x
+                x = x.squeeze()
                 # add 1 dimension to x
                 x = np.expand_dims(x, axis=0)
                 x = nn.Constant(x)
@@ -46,7 +52,9 @@ class neuralNetworkPredictionModel():
                 # convert x,y to nn.Node. y is label. Please use Constant
                 x = np.array(x)
                 y = np.array(y)
-                x = nn.Constant(x)
+                x.squeeze()
+                x = np.expand_dims(x, axis=0)
+                y = np.expand_dims(y, axis=0)
                 y = nn.Constant(y)
                 y_hat = self.run(x)
                 self.loss = nn.SoftmaxLoss(y_hat, y)
@@ -72,7 +80,7 @@ class neuralNetworkPredictionModel():
                         for id,x in enumerate(self.data):
                                 y = self.labels[id]
                                 self.loss = self.get_loss(x,y)
-                                sum += nn.as_scalar(self.loss.data)
+                                sum += self.loss.data
                         if sum < 0.01 * len(self.data) or iter > 200:
                                 break
                 # debug("train loss")
@@ -119,7 +127,7 @@ class neuralNetworkPredictionModel():
                         y_hat.data[i] = y_hat.data[i] / sum
                 return y_hat.data    
 
-        def addData(self, consumer:people.Consumer,balance:float , choice:SellerChoices) -> None:
+        def addData(self, preference:list,balance:float , choice:SellerChoices) -> None:
                 '''
                 add data to the model
                 '''
@@ -129,7 +137,7 @@ class neuralNetworkPredictionModel():
                 #         MEDIUM = 10
                 #         LOW = 8
                 #         SUPERLOW = 6
-                data = np.array(consumer.preference + [balance], dtype=np.float32)
+                data = np.array(preference + [balance], dtype=np.float32)
                 label = np.zeros(5)
                 if choice == SellerChoices.HIGH:
                         label[0] = 1
@@ -141,7 +149,5 @@ class neuralNetworkPredictionModel():
                         label[3] = 1
                 else:
                         label[4] = 1
-                data = nn.Constant(data)
-                label = nn.Constant(label)
                 self.data.append(data)
                 self.labels.append(label)
