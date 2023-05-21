@@ -187,6 +187,7 @@ if __name__ == '__main__':
     # args = readCommand(sys.argv[1:])  # Get game components based on input
     # runGames(**args)
     random.seed('cs181')
+    np.random.seed(181)
     args=parseargs()
     numTraining=args.numTraining
     numGames=args.numGames
