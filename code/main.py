@@ -202,6 +202,6 @@ if __name__ == '__main__':
     # rivals = [GreedySellerHigh(index=1)]
 
     # runGames(player, rivals, 5, record=True, numTraining=0)
-    games = runGames(player, rivals, numTraining+numGames, consumerNameList, record=False,
+    games = runGames(player, rivals, numTraining+numGames, consumerNameList, record=args.record,
                      numTraining=numTraining, weightFile=None,args=args)
     # plot(games)
