@@ -108,7 +108,7 @@ class QLearningAgent(ReinforcementAgent):
 class SellerQAgent(QLearningAgent):
     "Exactly the same as QLearningAgent, but with different default parameters"
 
-    def __init__(self, epsilon=0.05, gamma=0.91, alpha=0.2, numTraining=0, **args):
+    def __init__(self, epsilon=0.1, gamma=0.91, alpha=0.2, numTraining=0, **args):
         """
         These default parameters can be changed from the pacman.py command line.
         For example, to change the exploration rate, try:
@@ -236,15 +236,15 @@ class Extractor:
         return features
 
 
-class MCQAgent(ReinforcementAgent):
+class MCQAgent(QLearningAgent):
 
-    def __init__(self, epsilon=0.1, gamma=1.0, alpha=0.2, numTraining=0, **args):
+    def __init__(self, epsilon=0.1, gamma=1.0, alpha=0.2, numTraining=100, **args):
         "You can initialize Q-values here..."
         args['epsilon'] = epsilon
         args['gamma'] = gamma
         args['alpha'] = alpha
         args['numTraining'] = numTraining
-        ReinforcementAgent.__init__(self, **args)
+        QLearningAgent.__init__(self, **args)
         # Each term: {(state): [QValue, count]}
         self.QValues = utils.CounterMC()  # A Counter is a dict with default 0
 
@@ -313,7 +313,7 @@ class MCQAgent(ReinforcementAgent):
         """
           ep: epision for each game, [state, action, nextState, reward]
         """
-        finalScore=state.getScore() #+ state.getScore()-state.getScore(1)
+        finalScore=state.getScore() + state.getScore()-state.getScore(1)
         self.episodeRewards += finalScore
         for state, action, reward in self.epData:
             tmpReward=finalScore-reward
@@ -344,7 +344,7 @@ class MCQAgent(ReinforcementAgent):
             The simulation should somehow ensure this is called
         """
         if not self.lastState is None:
-            reward = state.getScore() #+ state.getScore()-state.getScore(1)
+            reward = state.getScore() + state.getScore()-state.getScore(1)
             self.epData.append([self.lastState.featureExtractor(), self.lastAction, reward])
             # self.observeTransition(self.lastState, self.lastAction, state, reward)
 

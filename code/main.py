@@ -5,9 +5,29 @@ import sys
 from matplotlib import pyplot as plt
 import numpy as np
 import pickle
+import argparse
 
+def parseargs():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--numTraining', type=int, default=0)
+    parser.add_argument('--numGames', type=int, default=50)
+    parser.add_argument('--record', type=bool, default=False)
+    parser.add_argument('--weightFile', type=str, default=None)
+    parser.add_argument('--agent', type=str, default=None, help='ExpectimaxAgent, AlphaBetaAgent, ApproximateQAgent, MCQAgent, neuralPredictSeller')
+    parser.add_argument('--expType',type=str,required=False)
+    parser.add_argument('--rival', type=str, default=None,nargs='+', help='GreedySellerHigh, GreedySellerLow, GreedySellerSuperLow, RandomSeller')
+    parser.add_argument('--consumerName',type=str, default=['Tom', 'Jerry'],nargs='+')
+    parser.add_argument('--saveFileName',type=str,default=None,required=False)
+    # parser.add_argument('--consumerNum',type=int,default=None)
+    args = parser.parse_args()
+    print("Train num:",args.numTraining)
+    print("Game num:",args.numGames)
+    print("Agent:", args.agent)
+    print("Rival:", args.rival)
+    print("save file name:", args.saveFileName)
+    return args
 
-def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList: List[str], record: bool, numTraining=0, weightFile=None):
+def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList: List[str], record: bool, numTraining=0, weightFile=None ,args=None):
     games = []
 
     if weightFile:
@@ -61,11 +81,18 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
         print('Record:       ', ', '.join(
             [['Loss', 'Win'][int(w)] for w in wins]))
 
+    saveFileName="test.pickle"
+    if args is not None:
+        if args.saveFileName is not None:
+            saveFileName=args.saveFileName
+    else:
+        saveFileName=f"{args.agent}_{args.rival}_{numTraining}"
+
     if "QValues" in dir(player):
-        with open(f'QValues_tmp.pickle', 'wb') as file:
+        with open(saveFileName, 'wb') as file:
             pickle.dump(player.QValues, file)
     if "weights" in dir(player):
-        with open(f'RLweights_tmp.pickle', 'wb') as file:
+        with open(saveFileName, 'wb') as file:
             pickle.dump(player.weights, file)
 
     return games
@@ -124,6 +151,28 @@ def plot(games: Game = None):
     plt.savefig('output.png')
 
 
+
+def peopleGen(args):
+    agent=args.agent
+    player=peopleFind(agent)()
+
+
+    rivals=[]
+    for id,rival in enumerate(args.rival):
+        rivals.append(peopleFind(rival)(id+1))
+
+    # if args.consumerName is not None and args.consumerNum is None:
+    #     args.consumerNum=len(args.consumerName)
+    # if args.consumerName is not None and len(args.consumerName)!=args.consumerNum:
+    #     raise Exception("Consumer number is not equal to number of consumerName")
+    # if args.consumerName is None:
+    #     consumer=[Consumer(i,None,None) for i in range(args.consumerNum)]
+    # else:
+    #     consumer=[Consumer(i,args.consumerName[i],None) for i in range(args.consumerNum)]
+
+    return player,rivals
+
+
 if __name__ == '__main__':
     """
     The main function called when main.py is run
@@ -137,14 +186,22 @@ if __name__ == '__main__':
     """
     # args = readCommand(sys.argv[1:])  # Get game components based on input
     # runGames(**args)
-    consumerNameList = ['Tom', 'Jerry']
-    player = MCQAgent()
-    numTraining = 5000
-    player.numTraining = numTraining
-    rivals = [GreedySellerHigh(index=1)]
-
     random.seed('cs181')
+    args=parseargs()
+    numTraining=args.numTraining
+    numGames=args.numGames
+    record=args.record
+    weightFile=args.weightFile
+    consumerNameList=args.consumerName
+    player, rivals=peopleGen(args)
+
+    # consumerNameList = ['Tom', 'Jerry']
+    # player = ApproximateQAgent()
+    # numTraining = 500000
+    # player.numTraining = numTraining
+    # rivals = [GreedySellerHigh(index=1)]
+
     # runGames(player, rivals, 5, record=True, numTraining=0)
-    games = runGames(player, rivals, numTraining+50, consumerNameList, record=False,
-                     numTraining=numTraining, weightFile=None)
+    games = runGames(player, rivals, numTraining+numGames, consumerNameList, record=False,
+                     numTraining=numTraining, weightFile=None,args=args)
     # plot(games)
