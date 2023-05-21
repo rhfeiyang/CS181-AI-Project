@@ -336,7 +336,7 @@ if __name__ == '__main__':
     playerAgent = ExpectimaxAgentKnowingRecord
     sellerAgents = [RandomSeller, GreedySellerHigh, GreedySellerLow, GreedySellerSuperLow]
     beliefs = [RandomSeller,neuralPredictSeller, GreedySellerHigh, GreedySellerLow, GreedySellerSuperLow]
-    depths = ['1']
+    depths = ['2']
     scoreFunctions = ["scoreEvaluationFunction", "scoreEvaluationFunction2","scoreEvaluationFunction3","betterEvaluationFunction"]
 
     #enuerate all possible combinations
