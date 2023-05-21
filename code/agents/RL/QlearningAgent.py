@@ -261,17 +261,6 @@ class MCQAgent(ReinforcementAgent):
         feat=state.featureExtractor()
         return self.QValues[(feat, action)] if (feat, action) in self.QValues else [0.0,0]
 
-    def computeValueFromQValues(self, state):
-        """
-          Returns max_action Q(state,action)
-          where the max is over legal actions.  Note that if
-          there are no legal actions, which is the case at the
-          terminal state, you should return a value of 0.0.
-        """
-        if len(state.getLegalChoices(self.index))==0:
-            return 0.0
-
-        return max([self.getQValue(state,action)[0] for action in state.getLegalChoices(state)])
 
     def computeActionFromQValues(self, state):
         """
@@ -339,8 +328,6 @@ class MCQAgent(ReinforcementAgent):
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
 
-    def getValue(self, state):
-        return self.computeValueFromQValues(state)
 
     def startEpisode(self):
         """
