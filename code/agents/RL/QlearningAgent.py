@@ -374,7 +374,133 @@ class MCQAgent(QLearningAgent):
         """
         raise Exception("update not available, refer to updateEpisode")
 
+class MCQApproxAgent(ApproximateQAgent):
 
+    def __init__(self, epsilon=0.1, gamma=1.0, alpha=0.2, numTraining=100, **args):
+        "You can initialize Q-values here..."
+        args['epsilon'] = epsilon
+        args['gamma'] = gamma
+        args['alpha'] = alpha
+        args['numTraining'] = numTraining
 
+        ApproximateQAgent.__init__(self, **args)
+        self.weights['ExploreTimes'] = utils.Counter()
+        # Each term: {(state): [QValue, count]}
 
+    def computeActionFromQValues(self, state):
+        """
+          Compute the best action to take in a state.  Note that if there
+          are no legal actions, which is the case at the terminal state,
+          you should return None.
+        """
+        if len(state.getLegalChoices(self.index))==0:
+            return None
+        q_values = utils.Counter()
+        stateFeature=state.featureExtractor()
+        for action in state.getLegalChoices(state):
+            q,time=self.getQValue(state, action, stateFeature)
+            if self.episodesSoFar >= self.numTraining:
+                # if test
+                q_values[action] = q
+            else:
+                # for train, use new explore function
+                q_values[action] = q+10/(time+1)
+        return q_values.argMax()
 
+    def getChoice(self, state):
+        """
+          Compute the action to take in the current state.  With
+          probability self.epsilon, we should take a random action and
+          take the best policy action otherwise.  Note that if there are
+          no legal actions, which is the case at the terminal state, you
+          should choose None as the action.
+
+          HINT: You might want to use utils.flipCoin(prob)
+          HINT: To pick randomly from a list, use random.choice(list)
+        """
+        # Pick Action
+        "*** YOUR CODE HERE ***"
+        action=self.getPolicy(state)
+        self.doAction(state, action)
+        return action
+
+    def doAction(self, state, action):
+        """
+            Called by inherited class when
+            an action is taken in a state
+        """
+        reward = state.getScore() + state.getScore()-state.getScore(1)
+        self.epData.append([state.copy(), action, reward])
+
+    def updateEpisode(self,state):
+        """
+          ep: epision for each game, [state, action, nextState, reward]
+        """
+        finalScore=state.getScore() + state.getScore()-state.getScore(1)
+        self.episodeRewards += finalScore
+        for state, action, reward in self.epData:
+            tmpReward=finalScore-reward
+            statefeature=state.featureExtractor()
+            value,times=self.getQValue(state,action,statefeature)
+            difference=tmpReward-value
+            self.weights['ExploreTimes'][(statefeature,action)]+=1
+
+            featureVector = self.featExtractor.getFeatures(state, action)
+            # print("Before weights: ", self.weights['bias'])
+            for feature in featureVector:
+                self.weights[feature] += self.alpha * difference * featureVector[feature]
+
+            # self.QValues[(state,action)][0]= \
+            #     (1-self.alpha)*self.getQValue(state,action)+self.alpha*(reward+self.discount*self.getValue(nextState))
+
+    def getPolicy(self, state):
+        return self.computeActionFromQValues(state)
+
+    def startEpisode(self):
+        """
+          Called by environment when new episode is starting
+        """
+        self.lastState = None
+        self.lastAction = None
+        self.episodeRewards = 0.0
+        self.epData = []
+
+    def observationFunction(self, state):
+        """
+            This is where we ended up after our last action.
+            The simulation should somehow ensure this is called
+        """
+        pass
+    def final(self, state):
+        self.updateEpisode(state)
+        ReinforcementAgent.final(self, state)
+    def observeTransition(self, state, action, nextState, deltaReward):
+        """
+            Called by environment to inform agent that a transition has
+            been observed. This will result in a call to self.update
+            on the same arguments
+
+            NOTE: Do *not* override or call this function
+        """
+        raise Exception("observeTransition not available")
+    def update(self, state, action, nextState, reward):
+        """
+            Called by environment when state changes
+        """
+        raise Exception("update not available, refer to updateEpisode")
+
+    def getQValue(self, state, action:int,stateFeature=None):
+        """
+          Should return Q(state,action) = w * featureVector
+          where * is the dotProduct operator
+        """
+        # Q(s,a) = w * featureVector
+        if stateFeature is None:
+            stateFeature=state.featureExtractor()
+        featureVector = self.featExtractor.getFeatures(state, action)
+        QValue = 0
+        for feature in featureVector:
+            QValue += self.weights[feature] * featureVector[feature]
+        time=self.weights['ExploreTimes'][(stateFeature,action)] if (stateFeature,action) in self.weights['ExploreTimes'] else 0
+        # print(f"restTime: {state.restTime}")
+        return QValue,time

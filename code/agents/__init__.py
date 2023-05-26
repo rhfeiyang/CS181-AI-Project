@@ -14,6 +14,8 @@ def peopleFind(name):
         player=ApproximateQAgent
     elif name=='MCQAgent':
         player=MCQAgent
+    elif name=='MCQApproximateQAgent':
+        player=MCQApproxAgent
     elif name=='RandomSeller':
         player=RandomSeller
     elif name=='GreedySellerHigh':

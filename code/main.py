@@ -13,7 +13,7 @@ def parseargs():
     parser.add_argument('--numGames', type=int, default=50)
     parser.add_argument('--record', type=bool, default=False)
     parser.add_argument('--weightFile', type=str, default=None)
-    parser.add_argument('--agent', type=str, default=None, help='ExpectimaxAgent, AlphaBetaAgent, ApproximateQAgent, MCQAgent, neuralPredictSeller, ManualAgent')
+    parser.add_argument('--agent', type=str, default=None, help='ExpectimaxAgent, AlphaBetaAgent, ApproximateQAgent, MCQAgent, MCQApproximateQAgent, neuralPredictSeller, ManualAgent')
     parser.add_argument('--expType',type=str,required=False)
     parser.add_argument('--rival', type=str, default=None,nargs='+', help='GreedySellerHigh, GreedySellerLow, GreedySellerSuperLow, RandomSeller')
     parser.add_argument('--consumerName',type=str, default=['Tom', 'Jerry'],nargs='+')
