@@ -273,8 +273,11 @@ class MCQAgent(QLearningAgent):
         q_values = utils.Counter()
 
         for action in state.getLegalChoices(state):
-            q_values[action] = self.getQValue(state, action)[0]
-
+            q,time=self.getQValue(state, action)
+            if self.episodesSoFar >= self.numTraining:
+                q_values[action] = q
+            else:
+                q_values[action] = q+10/(time+1)
         return q_values.argMax()
 
     def getChoice(self, state):
@@ -293,21 +296,25 @@ class MCQAgent(QLearningAgent):
         action = None
 
         "*** YOUR CODE HERE ***"
-        if utils.flipCoin(self.epsilon):
-            action=random.choice(legalActions)
-            self.doAction(state, action)
-            return action
-        else:
-            action=self.getPolicy(state)
-            self.doAction(state, action)
-            return action
+        # if utils.flipCoin(self.epsilon):
+        #     action=random.choice(legalActions)
+        #     self.doAction(state, action)
+        #     return action
+        # else:
+        #     action=self.getPolicy(state)
+        #     self.doAction(state, action)
+        #     return action
+        action=self.getPolicy(state)
+        self.doAction(state, action)
+        return action
+
     def doAction(self, state, action):
         """
             Called by inherited class when
             an action is taken in a state
         """
-        self.lastState = state.copy()
-        self.lastAction = action
+        reward = state.getScore() + state.getScore()-state.getScore(1)
+        self.epData.append([state.featureExtractor(), action, reward])
 
     def updateEpisode(self,state):
         """
@@ -320,7 +327,7 @@ class MCQAgent(QLearningAgent):
             value,times=self.QValues[(state,action)]
             times+=1
             # assert isinstance(state,tuple)
-            self.QValues[(state,action)]=[value*((times-1)/times)+tmpReward/times, times]
+            self.QValues[(state,action)]=[value*0.9+tmpReward*0.1, times]
 
             # self.QValues[(state,action)][0]= \
             #     (1-self.alpha)*self.getQValue(state,action)+self.alpha*(reward+self.discount*self.getValue(nextState))
@@ -343,10 +350,11 @@ class MCQAgent(QLearningAgent):
             This is where we ended up after our last action.
             The simulation should somehow ensure this is called
         """
-        if not self.lastState is None:
-            reward = state.getScore() + state.getScore()-state.getScore(1)
-            self.epData.append([self.lastState.featureExtractor(), self.lastAction, reward])
-            # self.observeTransition(self.lastState, self.lastAction, state, reward)
+        pass
+        # if not self.lastState is None:
+        #     reward = self.lastState.getScore() + self.lastState.getScore()-self.lastState.getScore(1)
+        #     self.epData.append([self.lastState.featureExtractor(), self.lastAction, reward])
+        #     # self.observeTransition(self.lastState, self.lastAction, state, reward)
 
     def final(self, state):
         self.updateEpisode(state)
