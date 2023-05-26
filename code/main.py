@@ -43,6 +43,7 @@ def parseargs():
         print("You have some rivals in the market. You need to make your restaurant more attractive than your rivals.")
         print("Try to get more income, prevent bankruptcy and beat your rivals!")
         print("Good luck!")
+        input("Press Enter to start...")
 
     else:
         print("Train num:",args.numTraining)
@@ -64,7 +65,7 @@ def parseargs():
 
 def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList: List[str], record: bool, numTraining=0, weightFile=None ,args=None):
     games = []
-
+    player.numTraining = numTraining
     if weightFile:
         try:
             player.loadWeights(weightFile)
@@ -122,8 +123,8 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
     if args is not None:
         if args.saveFileName is not None:
             saveFileName=args.saveFileName
-    else:
-        saveFileName=f"{args.agent}_{args.rival}_{numTraining}.pickle"
+        else:
+            saveFileName=f"{args.agent}_{args.rival}_{numTraining}.pickle"
 
     if "QValues" in dir(player):
         with open(saveFileName, 'wb') as file:
@@ -242,5 +243,5 @@ if __name__ == '__main__':
 
     # runGames(player, rivals, 5, record=True, numTraining=0)
     games = runGames(player, rivals, numTraining+numGames, consumerNameList, record=args.record,
-                     numTraining=numTraining, weightFile=None,args=args)
+                     numTraining=numTraining, weightFile=args.weightFile,args=args)
     # plot(games)
