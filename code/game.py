@@ -37,7 +37,8 @@ class GameState:
         self.force = False
         self.restTime = maxDay
         self.maxDay = maxDay
-
+    def getTrainScore(self):
+        return self.getScore()-self.getScore(1)
     def getCurrentConsumer(self):
         return self.consumers[self.curConsumer]
 

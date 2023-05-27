@@ -294,9 +294,6 @@ class MCQAgent(QLearningAgent):
           HINT: To pick randomly from a list, use random.choice(list)
         """
         # Pick Action
-        legalActions = state.getLegalChoices(self.index)
-        action = None
-
         "*** YOUR CODE HERE ***"
         # if utils.flipCoin(self.epsilon):
         #     action=random.choice(legalActions)
@@ -315,15 +312,15 @@ class MCQAgent(QLearningAgent):
             Called by inherited class when
             an action is taken in a state
         """
-        reward = state.getScore() + state.getScore()-state.getScore(1)
+        reward = state.getTrainScore()
         self.epData.append([state.featureExtractor(), action, reward])
 
     def updateEpisode(self,state):
         """
           ep: epision for each game, [state, action, nextState, reward]
         """
-        finalScore=state.getScore() + state.getScore()-state.getScore(1)
-        self.episodeRewards += finalScore
+        finalScore=state.getTrainScore()
+        self.episodeRewards += state.getScore()
         for state, action, reward in self.epData:
             tmpReward=finalScore-reward
             value,times=self.QValues[(state,action)]
@@ -431,15 +428,15 @@ class MCQApproxAgent(ApproximateQAgent):
             Called by inherited class when
             an action is taken in a state
         """
-        reward = state.getScore() + state.getScore()-state.getScore(1)
+        reward = state.getTrainScore()
         self.epData.append([state.copy(), action, reward])
 
     def updateEpisode(self,state):
         """
           ep: epision for each game, [state, action, nextState, reward]
         """
-        finalScore=state.getScore() + state.getScore()-state.getScore(1)
-        self.episodeRewards += finalScore
+        finalScore=state.getTrainScore()
+        self.episodeRewards += state.getScore()
         for state, action, reward in self.epData:
             tmpReward=finalScore-reward
             statefeature=state.featureExtractor()
