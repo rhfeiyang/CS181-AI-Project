@@ -329,7 +329,7 @@ class MCQAgent(QLearningAgent):
             value,times=self.QValues[(state,action)]
             times+=1
             # assert isinstance(state,tuple)
-            self.QValues[(state,action)]=[value*0.9+tmpReward*0.1, times]
+            self.QValues[(state,action)]=[value*(1-self.alpha)+tmpReward*self.alpha, times]
 
             # self.QValues[(state,action)][0]= \
             #     (1-self.alpha)*self.getQValue(state,action)+self.alpha*(reward+self.discount*self.getValue(nextState))
