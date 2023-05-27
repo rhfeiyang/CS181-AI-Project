@@ -251,15 +251,16 @@ class MCQAgent(QLearningAgent):
     def loadWeights(self, weightFile):
         with open(weightFile, 'rb') as f:
             self.QValues = pickle.load(f)
-    def getQValue(self, state, action):
+    def getQValue(self, state, action,stateFeature=None):
         """
           Returns Q(state,action)
           Should return 0.0 if we have never seen a state
           or the Q node value otherwise
         """
         # return 0.0 if we have never seen a state
-        feat=state.featureExtractor()
-        return self.QValues[(feat, action)] if (feat, action) in self.QValues else [0.0,0]
+        if stateFeature is None:
+            stateFeature=state.featureExtractor()
+        return self.QValues[(stateFeature, action)] if (stateFeature, action) in self.QValues else [0.0,0]
 
 
     def computeActionFromQValues(self, state):
@@ -271,9 +272,10 @@ class MCQAgent(QLearningAgent):
         if len(state.getLegalChoices(self.index))==0:
             return None
         q_values = utils.Counter()
+        stateFeature=state.featureExtractor()
 
         for action in state.getLegalChoices(state):
-            q,time=self.getQValue(state, action)
+            q,time=self.getQValue(state, action,stateFeature)
             if self.episodesSoFar >= self.numTraining:
                 q_values[action] = q
             else:
