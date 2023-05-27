@@ -435,6 +435,8 @@ class MCQApproxAgent(ApproximateQAgent):
         """
           ep: epision for each game, [state, action, nextState, reward]
         """
+        if self.episodesSoFar >= self.numTraining:
+            return
         finalScore=state.getTrainScore()
         self.episodeRewards += state.getScore()
         for state, action, reward in self.epData:

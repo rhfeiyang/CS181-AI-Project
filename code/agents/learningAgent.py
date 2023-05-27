@@ -168,8 +168,12 @@ class ReinforcementAgent(ValueEstimationAgent):
         self.accumTrainRewards = 0.0
         self.accumTestRewards = 0.0
         self.numTraining = int(numTraining)
-        self.epsilon = float(epsilon)
-        self.alpha = float(alpha)
+        if self.numTraining==0:
+            self.epsilon = 0
+            self.alpha = 0
+        else:
+            self.epsilon = float(epsilon)
+            self.alpha = float(alpha)
         self.discount = float(gamma)
 
     ################################

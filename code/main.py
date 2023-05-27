@@ -65,12 +65,18 @@ def parseargs():
 
 def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList: List[str], record: bool, numTraining=0, weightFile=None ,args=None):
     games = []
-    player.numTraining = numTraining
     if weightFile:
         try:
             player.loadWeights(weightFile)
         except:
             print("No weight file found")
+
+    saveFileName="test"
+    if args is not None:
+        if args.saveFileName is not None:
+            saveFileName=args.saveFileName
+        else:
+            saveFileName=f"{args.agent}_{args.rival}"
 
     for i in range(numGames):
         beQuiet = i < numTraining
@@ -107,6 +113,13 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
             #     components = {'layout': layout, 'actions': game.moveHistory}
             #     pickle.dump(components, f)
             game.showRecord()
+        if i % 50000==0 and i>0:
+            if "QValues" in dir(player):
+                with open(saveFileName+'_'+str(i)+'.pickle', 'wb') as file:
+                    pickle.dump(player.QValues, file)
+            if "weights" in dir(player):
+                with open(saveFileName+'_'+str(i)+'.pickle', 'wb') as file:
+                    pickle.dump(player.weights, file)
 
     if (numGames-numTraining) > 0:
         scores = [game.playerScore for game in games]
@@ -119,19 +132,14 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
         print('Record:       ', ', '.join(
             [['Loss', 'Win'][int(w)] for w in wins]))
 
-    saveFileName="test.pickle"
-    if args is not None:
-        if args.saveFileName is not None:
-            saveFileName=args.saveFileName
-        else:
-            saveFileName=f"{args.agent}_{args.rival}_{numTraining}.pickle"
 
-    if "QValues" in dir(player):
-        with open(saveFileName, 'wb') as file:
-            pickle.dump(player.QValues, file)
-    if "weights" in dir(player):
-        with open(saveFileName, 'wb') as file:
-            pickle.dump(player.weights, file)
+    if numTraining>0:
+        if "QValues" in dir(player):
+            with open(saveFileName+'_'+str(numTraining)+'.pickle', 'wb') as file:
+                pickle.dump(player.QValues, file)
+        if "weights" in dir(player):
+            with open(saveFileName+'_'+str(numTraining)+'.pickle', 'wb') as file:
+                pickle.dump(player.weights, file)
 
     return games
 
@@ -192,7 +200,7 @@ def plot(games: Game = None):
 
 def peopleGen(args):
     agent=args.agent
-    player=peopleFind(agent)()
+    player=peopleFind(agent)(numTraining=args.numTraining)
 
 
     rivals=[]

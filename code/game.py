@@ -81,7 +81,9 @@ class GameState:
 
         for i in range(self.sellerNum):
             features['seller'+str(i)+'_score'] = self.sellers[i].getScore()
-        features['consumerPreference'] = tuple([tuple([round(p) for p in i.preference]) for i in self.consumers])
+        for i in self.consumers:
+            playerPreference = i.preference[0]
+            features[f'PreferDiff{i}']=tuple([round(playerPreference-i.preference[j]) for j in range(1, self.sellerNum)])
 
         features['curConsumer'] = self.curConsumer
         features['restTime'] = self.restTime
