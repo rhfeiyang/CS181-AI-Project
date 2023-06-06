@@ -31,6 +31,11 @@ class QLearningAgent(ReinforcementAgent):
 
         self.QValues = utils.Counter()  # A Counter is a dict with default 0
 
+    def closeTrain(self):
+        self.numTraining=0
+        self.alpha=0
+        self.epsilon=0
+
     def getQValue(self, state, action):
         """
           Returns Q(state,action)
@@ -96,7 +101,7 @@ class QLearningAgent(ReinforcementAgent):
           NOTE: You should never call this function,
           it will be called on your behalf
         """
-        self.values[(state,action)]= \
+        self.QValues[(state,action)]= \
             (1-self.alpha)*self.getQValue(state,action)+self.alpha*(reward+self.discount*self.getValue(nextState))
 
     def getPolicy(self, state):
@@ -221,18 +226,18 @@ class Extractor:
         # features[f"action"]=action
         features["bias"] = 1.0
         # features["balance"] = state.getScore()/50
-        features["dailyCost"]=state.dailyCost/20
-        features["restTime"]=state.restTime/2000
+        # features["dailyCost"]=state.dailyCost/20
+        features["restTime"]=state.restTime/100
 
         # features["dailyIncome"]=state.dailyIncome/10
         for i in range(state.consumerNum):
             for j in range(state.sellerNum):
-                features[f"consumer{i}_{j}"]=state.consumers[i].preference[j]/10
+                features[f"consumer{i}_{j}"]=state.consumers[i].preference[j]/50
         for i in range(state.sellerNum):
-            features[f"rivalScore_{i}"]=state.getScore(i)/10
+            features[f"rivalScore_{i}"]=state.getScore(i)/50
 
         features["liveAgents"]=state.getLiveAgents()/state.sellerNum
-        features.divideAll(15.0)
+        features.divideAll(20.0)
         return features
 
 
