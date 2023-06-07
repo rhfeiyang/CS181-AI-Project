@@ -224,7 +224,7 @@ class Game:
         print(f"----Game Over----")
         print(f"Player score: {dayRecord[-1]['seller'][0]['balance']}")
 
-    def run(self):
+    def run(self,test=False):
         '''
         Main control loop for game play.
         '''
@@ -297,9 +297,10 @@ class Game:
                                                      "balance": self.state.getScore(seller.index)})
         self.playerScore = self.state.getScore()
         scores = [agent.getScore() for agent in self.state.sellers]
+        self.rivalScore = max(scores[1:])
         # print(f"Final scores: {scores}, end day: {day}")
         self.isWin = self.state.isWin() if self.gameOver else argmax(scores) == 0
-        if ("final" in dir(self.agents[0])):
+        if ("final" in dir(self.agents[0])) and not test:
             self.mute(0)
             self.agents[0].final(self.state)
             self.unmute()

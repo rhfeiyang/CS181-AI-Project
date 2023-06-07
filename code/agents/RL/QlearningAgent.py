@@ -3,6 +3,7 @@ from ..learningAgent import ReinforcementAgent
 import random
 import pickle
 from typing import List
+import matplotlib.pyplot as plt
 
 class QLearningAgent(ReinforcementAgent):
     """
@@ -28,13 +29,61 @@ class QLearningAgent(ReinforcementAgent):
     def __init__(self, **args):
         "You can initialize Q-values here..."
         ReinforcementAgent.__init__(self, **args)
-
+        self.midResult=[]
         self.QValues = utils.Counter()  # A Counter is a dict with default 0
+    def addAnalysisData(self,testData):
+        NUM_EPS_UPDATE=1000
+        windowAvg = self.lastWindowAccumRewards / float(NUM_EPS_UPDATE)
+        trainWindowAvg= self.lastWindowAccumTrainRewards/float(NUM_EPS_UPDATE)
+        self.midResult.append([testData[0],testData[1],(windowAvg,trainWindowAvg)])
+
+    def plotAnalysis(self,rivalName):
+        Episodes=[]
+        Winrate=[]
+        Score=[]
+        RivalScore=[]
+        TrainBalance=[]
+        TrainAim=[]
+        for episode,testdata,traindata in self.midResult:
+            winrate,score,rivalscore=testdata
+            trainBalance, trainAim=traindata
+            Episodes.append(episode)
+            Winrate.append(winrate)
+            Score.append(score)
+            RivalScore.append(rivalscore)
+            TrainAim.append(trainAim)
+            TrainBalance.append(trainBalance)
+
+        plt.plot(Episodes,Score,marker='o',label="Test Player balance")
+        plt.plot(Episodes,RivalScore,marker='o',label="Test rival balance")
+        plt.plot(Episodes,TrainBalance,marker='o',label="Train player balance")
+        plt.plot(Episodes,TrainAim,marker='o',label="Train Aim(diff)")
+
+        plt.xlabel("Episode")
+        plt.ylabel("Score")
+        plt.legend()
+        plt.title( f"{self.__class__.__name__} vs {rivalName}")
+        plt.savefig(f"{self.__class__.__name__}_{rivalName} Score.png")
+        with open(self.__class__.__name__+f'_{rivalName}_analysis.pickle', 'wb') as file:
+            pickle.dump(self.midResult, file)
 
     def closeTrain(self):
         self.numTraining=0
         self.alpha=0
         self.epsilon=0
+
+    def switchTrain(self):
+        if self.alpha==0 and self.epsilon==0:
+            try:
+                self.alpha=self.lastAlpha
+                self.epsilon=self.lastEpsilon
+            except:
+                raise Exception("Not trained yet")
+        else:
+            self.lastAlpha=self.alpha
+            self.lastEpsilon=self.epsilon
+            self.alpha=0
+            self.epsilon=0
 
     def getQValue(self, state, action,feat=None):
         """

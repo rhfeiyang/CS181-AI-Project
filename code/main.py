@@ -6,7 +6,8 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pickle
 import argparse
-
+RLanalysisPharse = [500,1000,2000,5000,10000, 13000, 15000, 20000, 25000, 30000 ,35000, 40000]
+RLanalysisPharse = [i-1 for i in RLanalysisPharse]
 def parseargs():
     parser = argparse.ArgumentParser()
     parser.add_argument('--numTraining', type=int, default=0)
@@ -63,6 +64,26 @@ def parseargs():
 
     return args
 
+def midTest(player,rivals,args):
+    testGames = []
+    if isinstance(player, QLearningAgent):
+        player.switchTrain()
+    for testid in range(100):
+        game = Game([player] + rivals,
+                    consumerNum=len(args.consumerName), nameList=args.consumerName,
+                    balance=args.initBalance, dailyCost=args.dailyCost,
+                    dailyIncome=args.dailyIncome, maxDay=args.maxDay)
+        game.run(test=True)
+        testGames.append(game)
+
+    scores = [game.playerScore for game in testGames]
+    rivalScore=[game.rivalScore for game in testGames]
+    wins = [game.isWin for game in testGames]
+    winRate = wins.count(True) / float(len(wins))
+    if isinstance(player, QLearningAgent):
+        player.switchTrain()
+    return winRate,np.average(scores),np.average(rivalScore)
+
 def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList: List[str], record: bool, numTraining=0, weightFile=None ,args=None):
     games = []
     if weightFile:
@@ -95,6 +116,11 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
 
         # consumerNameList = ['Tom', 'Jerry', 'a', 'b', 'c', 'd', 'e']
         consumerNum = len(consumerNameList)
+
+        if i in RLanalysisPharse and isinstance(player, QLearningAgent):
+            player.addAnalysisData((i+1,midTest(player,rivals,args)))
+            if i==RLanalysisPharse[-1]:
+                player.plotAnalysis(rivalName=rivals[0].__class__.__name__)
 
         game = Game([player]+rivals,
                     consumerNum=consumerNum, nameList=consumerNameList,
