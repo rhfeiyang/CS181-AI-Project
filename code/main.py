@@ -172,29 +172,29 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
 
 
 def plot(games: Game = None):
-    def getSellerAgentName(agent: Agent):
-        if isinstance(agent, ExpectimaxAgent):
-            return 'ExpectimaxAgent'
-        elif isinstance(agent, AlphaBetaAgent):
-            return 'AlphaBetaAgent'
-        elif isinstance(agent, RandomSeller):
-            return 'RandomSeller'
-        # elif isinstance(agent, neuralPredictSeller):
-        #     return 'neuralPredictSeller'
-        elif isinstance(agent, GreedySellerHigh):
-            return 'GreedySellerHigh'
-        elif isinstance(agent, GreedySellerLow):
-            return 'GreedySellerLow'
-        elif isinstance(agent, GreedySellerSuperLow):
-            return 'GreedySellerSuperLow'
-        return 'Unknown'
+    # def getSellerAgentName(agent: Agent):
+    #     if isinstance(agent, ExpectimaxAgent):
+    #         return 'ExpectimaxAgent'
+    #     elif isinstance(agent, AlphaBetaAgent):
+    #         return 'AlphaBetaAgent'
+    #     elif isinstance(agent, RandomSeller):
+    #         return 'RandomSeller'
+    #     # elif isinstance(agent, neuralPredictSeller):
+    #     #     return 'neuralPredictSeller'
+    #     elif isinstance(agent, GreedySellerHigh):
+    #         return 'GreedySellerHigh'
+    #     elif isinstance(agent, GreedySellerLow):
+    #         return 'GreedySellerLow'
+    #     elif isinstance(agent, GreedySellerSuperLow):
+    #         return 'GreedySellerSuperLow'
+    #     return 'Unknown'
 
-    if games != None:
-        with open('game.pkl', 'wb') as f:
-            pickle.dump(games, f)
-    else:
-        with open('game.pkl', 'rb') as f:
-            games = pickle.load(f)
+    # if games != None:
+    #     with open('game.pkl', 'wb') as f:
+    #         pickle.dump(games, f)
+    # else:
+    #     with open('game.pkl', 'rb') as f:
+    #         games = pickle.load(f)
 
     sellerNum = games[0].sellerNum
     x = np.arange(1, games[0].maxDay+1)
@@ -212,7 +212,7 @@ def plot(games: Game = None):
     plt.figure()
     for i in range(sellerNum):
         plt.plot(x, sellerBalance[i],
-                 label=f'{getSellerAgentName(games[0].agents[i])}',
+                 label=f'{games[0].agents[i].__class__.__name__}',
                  linestyle='-' if i == 0 else '--')
 
     plt.title(f'Average Balance of Different Seller Agents in {len(games)} Games')
