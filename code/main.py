@@ -189,12 +189,12 @@ def plot(games: Game = None):
             return 'GreedySellerSuperLow'
         return 'Unknown'
 
-    if games != None:
-        with open('game.pkl', 'wb') as f:
-            pickle.dump(games, f)
-    else:
-        with open('game.pkl', 'rb') as f:
-            games = pickle.load(f)
+    # if games != None:
+    #     with open('game.pkl', 'wb') as f:
+    #         pickle.dump(games, f)
+    # else:
+    #     with open('game.pkl', 'rb') as f:
+    #         games = pickle.load(f)
 
     sellerNum = games[0].sellerNum
     x = np.arange(1, games[0].maxDay+1)
@@ -227,7 +227,11 @@ def plot(games: Game = None):
 
 def peopleGen(args):
     agent=args.agent
-    player=peopleFind(agent)(numTraining=args.numTraining)
+    try:
+        player=peopleFind(agent)(numTraining=args.numTraining)
+    except:
+        player=peopleFind(agent)()
+
 
 
     rivals=[]
