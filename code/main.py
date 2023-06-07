@@ -328,7 +328,7 @@ if __name__ == '__main__':
     """
     args = sys.argv[1:]  # Get game components based on input
     # runGames(**args)
-    # id = int(args[0])
+    id = int(args[0])
     consumerNameList = ['Tom', 'Jerry']
     consumerNum = len(consumerNameList)
     sellerNum = 2
@@ -353,13 +353,13 @@ if __name__ == '__main__':
         for belief in beliefs:
             for depth in depths:
                 for scoreFunction in scoreFunctions:
-                    # if id > 0: 
-                        # id -= 1/
-                        # continue
+                    if id > 0: 
+                        id -= 1
+                        continue
                     print(f'playerAgent:{ExpectimaxAgentKnowingRecord}, sellerAgent:{sellerAgent}, belief:{belief}, depth:{depth}, scoreFunction:{scoreFunction}')
                     #make the following function multi-threaded
                     # start a new thread for the test. Write codes
-                    # run_test(ExpectimaxAgentKnowingRecord, sellerAgent, belief, depth, scoreFunction,sellerNum,consumerNum)
+                    run_test(ExpectimaxAgentKnowingRecord, sellerAgent, belief, depth, scoreFunction,sellerNum,consumerNum)
                     # allThreads.append(testThread(sellerAgent, belief, depth, scoreFunction))
                         
     # start all threads in allThreads immediately
