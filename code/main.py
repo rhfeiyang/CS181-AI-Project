@@ -121,6 +121,7 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
             player.addAnalysisData((i+1,midTest(player,rivals,args)))
             if i==RLanalysisPharse[-1]:
                 player.plotAnalysis(rivalName=rivals[0].__class__.__name__)
+                player.episodesSoFar+=1
 
         game = Game([player]+rivals,
                     consumerNum=consumerNum, nameList=consumerNameList,
