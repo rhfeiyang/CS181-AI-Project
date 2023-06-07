@@ -117,7 +117,7 @@ def runGames(player: Agent, rivals: List[Agent], numGames: int, consumerNameList
         # consumerNameList = ['Tom', 'Jerry', 'a', 'b', 'c', 'd', 'e']
         consumerNum = len(consumerNameList)
 
-        if i in RLanalysisPharse and isinstance(player, QLearningAgent):
+        if i in RLanalysisPharse and isinstance(player, QLearningAgent) and args.numTraining>0:
             player.addAnalysisData((i+1,midTest(player,rivals,args)))
             if i==RLanalysisPharse[-1]:
                 player.plotAnalysis(rivalName=rivals[0].__class__.__name__)
@@ -227,8 +227,10 @@ def plot(games: Game = None):
 
 def peopleGen(args):
     agent=args.agent
-    player=peopleFind(agent)(numTraining=args.numTraining)
-
+    try:
+        player=peopleFind(agent)(numTraining=args.numTraining)
+    except:
+        player=peopleFind(agent)()
 
     rivals=[]
     for id,rival in enumerate(args.rival):
