@@ -320,7 +320,7 @@ if __name__ == '__main__':
     The main function called when main.py is run
     from the command line:
 
-    > python main.py
+    > python main.py id
 
     See the usage string for more details.
 
@@ -328,7 +328,18 @@ if __name__ == '__main__':
     """
     args = sys.argv[1:]  # Get game components based on input
     # runGames(**args)
-    id = int(args[0])
+    try:
+        id = int(args[0])
+    except:
+        print("""
+        the id is the number of testcases.
+    > python main.py id
+
+    See the usage string for more details.
+
+    > python main.py --help
+    """)
+        exit(0)
     consumerNameList = ['Tom', 'Jerry']
     consumerNum = len(consumerNameList)
     sellerNum = 2
@@ -361,6 +372,7 @@ if __name__ == '__main__':
                     # start a new thread for the test. Write codes
                     run_test(ExpectimaxAgentKnowingRecord, sellerAgent, belief, depth, scoreFunction,sellerNum,consumerNum)
                     # allThreads.append(testThread(sellerAgent, belief, depth, scoreFunction))
+                    break
                         
     # start all threads in allThreads immediately
     exit(0)
