@@ -262,6 +262,9 @@ class Game:
                 # print(f"Consumer {consumer.name} decide to eat at seller {eatIdx}")
                 self.record[-1][-1]["consumerChoice"] = eatIdx
                 if eatIdx != sellerIdx:
+                    if eatIdx==0:
+                        if 'observationFunction' in dir(self.agents[0]):
+                            self.agents[0].observationFunction(self.state)
                     sellerAgent = self.agents[eatIdx]
                     sellerChoice = sellerAgent.getChoice(self.state)
                     # print(f"Seller {eatIdx} choose price {sellerChoice}")

@@ -10,6 +10,8 @@ def peopleFind(name):
         player=ExpectimaxAgent
     elif name=='AlphaBetaAgent':
         player=AlphaBetaAgent
+    elif name=='SellerQAgent':
+        player=SellerQAgent
     elif name=='ApproximateQAgent':
         player=ApproximateQAgent
     elif name=='MCQAgent':

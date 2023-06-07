@@ -36,14 +36,16 @@ class QLearningAgent(ReinforcementAgent):
         self.alpha=0
         self.epsilon=0
 
-    def getQValue(self, state, action):
+    def getQValue(self, state, action,feat=None):
         """
           Returns Q(state,action)
           Should return 0.0 if we have never seen a state
           or the Q node value otherwise
         """
         # return 0.0 if we have never seen a state
-        return self.QValues[(state, action)] if (state, action) in self.QValues else 0.0
+        if feat==None:
+            feat=state.featureExtractor()
+        return self.QValues[(feat, action)] if (feat, action) in self.QValues else 0.0
 
     def computeValueFromQValues(self, state):
         """
@@ -54,8 +56,8 @@ class QLearningAgent(ReinforcementAgent):
         """
         if len(state.getLegalChoices(self.index))==0:
             return 0.0
-
-        return max([self.getQValue(state,action) for action in state.getLegalChoices(state)])
+        feat=state.featureExtractor()
+        return max([self.getQValue(state,action,feat=feat) for action in state.getLegalChoices(state)])
 
     def computeActionFromQValues(self, state):
         """
@@ -101,8 +103,9 @@ class QLearningAgent(ReinforcementAgent):
           NOTE: You should never call this function,
           it will be called on your behalf
         """
-        self.QValues[(state,action)]= \
-            (1-self.alpha)*self.getQValue(state,action)+self.alpha*(reward+self.discount*self.getValue(nextState))
+        feat=state.featureExtractor()
+        self.QValues[(feat,action)]= \
+            (1-self.alpha)*self.getQValue(state,action,feat)+self.alpha*(reward+self.discount*self.getValue(nextState))
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
@@ -165,6 +168,17 @@ class ApproximateQAgent(SellerQAgent):
 
     def getWeights(self):
         return self.weights
+
+    def computeValueFromQValues(self, state):
+        """
+          Returns max_action Q(state,action)
+          where the max is over legal actions.  Note that if
+          there are no legal actions, which is the case at the
+          terminal state, you should return a value of 0.0.
+        """
+        if len(state.getLegalChoices(self.index))==0:
+            return 0.0
+        return max([self.getQValue(state,action) for action in state.getLegalChoices(state)])
 
     def getQValue(self, state, action:int):
         """
